@@ -1,0 +1,134 @@
+@import url(/src/css/global.css);
+
+main {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--cor-fundo);
+}
+
+.mostra {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    border: none;
+    background-color: transparent;
+    display: none;
+    font-size: 1.5rem;
+    transition: 1s;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: var(--cor-cinza);
+    padding: 20px;
+    height: auto;
+    transition: 1s;
+}
+
+.cards.escondido {
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    transform: translateY(-200px);
+}
+
+article {
+    background-color: var(--cor-branco);
+    border-radius: 10px;
+    width: auto;
+    height: 100px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+strong {
+    font-size: 2rem;
+    color: var(--cor-preto);
+}
+
+.posicaocontainer {
+    overflow-y: hidden;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.posicao-carros {
+    display: grid;
+    align-items: center;
+    justify-content: space-around;
+    grid-template-columns: repeat(10, auto);
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+    transition: 1s;
+}
+
+.cardCarro {
+    background-color: var(--cor-cinza-escuro);
+    color: var(--cor-branco);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.opcoes {
+    height: auto;
+    background-color: var(--cor-cinza);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    transform: translateY(0px);
+    transition: 1s;
+}
+
+.opcoes.escondido {
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    transform: translateY(200px);
+}
+
+.cadastra,
+.focus,
+.sair {
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+}
+
+.cadastra {
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: rgba(0, 0, 255, 0.558);
+    padding: 10px;
+    color: var(--cor-branco);
+    border-radius: 10px;
+}
+
+.cadastra:hover {
+    background-color: rgb(0, 0, 255);
+}
+
+.sair {
+    transform: rotate(180deg);
+}

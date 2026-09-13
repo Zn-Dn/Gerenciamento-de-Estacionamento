@@ -1,0 +1,76 @@
+@import url(./global.css);
+
+ 
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ 
+.container {
+   
+    padding: 2.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(6, 0, 5, 0.8);
+    width: 100%;
+    max-width: 460px;
+}
+ 
+.container h1 {
+    text-align: center;
+    color: var(--cor-preto);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+ 
+.infor-login form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+ 
+.infor-login label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    color: var(--cor-preto);
+    gap: 0.4rem;
+}
+ 
+.infor-login input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--cor-preto);
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+ 
+.infor-login input:focus {
+    border-color: #2563eb;
+}
+ 
+.entrar {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+ 
+.entrar button {
+    width: 100%;
+    padding: 0.7rem;
+    background-color: #1f2937;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+ 
+.entrar button:hover {
+    background-color: #111827;
+}

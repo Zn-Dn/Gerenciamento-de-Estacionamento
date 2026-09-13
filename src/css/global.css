@@ -1,0 +1,45 @@
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    width: 100%;
+}
+
+
+
+:root {
+
+    /* base */
+    --cor-fundo: #F5F5F3;
+    --cor-branco: #FFFFFF;
+    --cor-preto: #171717;
+
+    /* cinzas */
+    --cor-cinza-claro: #E5E5E5;
+    --cor-cinza: #A3A3A3;
+    --cor-cinza-escuro: #525252;
+    --cor-grafite: #262626;
+
+    /* status */
+    --cor-sucesso: #22C55E;
+    --cor-atencao: #EAB308;
+    --cor-erro: #EF4444;
+
+    /* status - fundos */
+    --cor-sucesso-claro: #DCFCE7;
+    --cor-atencao-claro: #FEF9C3;
+    --cor-erro-claro: #FEE2E2;
+
+    /* interação */
+    --cor-hover: #303030;
+    --cor-disabled: #D4D4D4;
+
+    /* sombras */
+    --sombra-card: rgba(0, 0, 0, 0.05);
+    --sombra-forte: rgba(0, 0, 0, 0.10);
+}

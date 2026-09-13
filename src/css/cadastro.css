@@ -1,0 +1,100 @@
+@import url(/src/css/global.css);
+
+body{
+    overflow-y: hidden;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.motorista-carro {
+    background-color: var(--cor-branco);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+ position: relative;}
+
+
+
+.infor {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+   
+}
+
+.motorista,
+.carro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.motorista {
+    padding-right: 2rem;
+    border-right: 2px solid var(--cor-cinza-escuro);
+    
+}
+
+.Titulo {
+    color: var(--cor-preto);
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.motorista form,
+.carro form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.motorista label,
+.carro label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    color: var(--cor-cinza-escuro);
+    gap: 0.4rem;
+}
+
+.motorista input,
+.carro input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--cor-cinza-escuro);
+    border-radius: 4px;
+    font-size: 1rem;
+    color: var(--cor-preto);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.motorista input:focus,
+.carro input:focus {
+    border-color: var(--cor-cinza);
+}
+
+.motorista-carro > button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--cor-preto);
+    color: var(--cor-branco);
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.motorista-carro > button:hover {
+    background-color:#000000c9 ;
+}
+
