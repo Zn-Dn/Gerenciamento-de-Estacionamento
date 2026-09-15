@@ -1,10 +1,17 @@
 let Senha = document.querySelector<HTMLInputElement>("#senha")
 let email = document.querySelector<HTMLInputElement>("#email")
 let entra = document.querySelector<HTMLButtonElement>(".entrar")
-
+const estruturaEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 console.log('teste')
 entra?.addEventListener("click", async ()=>{
-    try{
+
+    if(Senha?.value === ""  || email?.value === "" ){
+        return
+ 
+    }
+    else{
+        if (email && estruturaEmail.test(email.value)) {
+ try{
      const respostaLogin = await fetch('http://localhost:3000/login',{
         method:'post',
         headers:{
@@ -16,7 +23,7 @@ entra?.addEventListener("click", async ()=>{
         })
     })  
     const resultado = await respostaLogin.json();
-    console.log(resultado.status);
+   
 
     if(resultado.status === true){
         window.location.href = "/src/pages/dashboard.html"
@@ -27,5 +34,12 @@ entra?.addEventListener("click", async ()=>{
     }
 
 
+         }
+         else{
+            console.log("senha ou email nao correspondem")
+            return
+         }
+        }
+   
 
 })

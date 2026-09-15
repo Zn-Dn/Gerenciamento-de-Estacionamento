@@ -98,3 +98,11 @@ main {
     background-color:#000000c9 ;
 }
 
+#escolharTempo{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+#escolharTempo select{
+    width: 70px;
+}

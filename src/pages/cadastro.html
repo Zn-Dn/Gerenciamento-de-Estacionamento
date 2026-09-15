@@ -21,17 +21,24 @@
             
                 <form action="">
                     <label for="">
-                        Nome Completo: <input type="text">
+                        Nome Completo: <input type="text" id="nome">
                     </label>
                     <label for="">CPF:
-                        <input type="number">
+                        <input type="number" id="cpf">
                     </label>
                     <label for="">
-                        Telefone: <input type="number">
+                        Telefone: <input type="number" id="telefone">
                     </label>
-                    <label for="">
-                        Tempo: <input type="number">
-                    </label>
+                    <div id="escolharTempo">
+                        
+                        <label for="">
+                            Tempo: <input type="number" id="tempo">
+                        </label>
+                        <select>
+    <option value="minutos">Minutos</option>
+    <option value="horas">Horas</option>
+</select>
+                    </div>
                 </form>
 </div>
 
@@ -40,23 +47,28 @@
     <h2 class="Titulo">
                 Informações do Carro
             </h2>
-     <form action="">
-                    <label for="">
-                        Placa: <input type="text">
-                    </label>
-                    <label for="">modelo:
-                        <input type="text">
-                    </label>
-                    <label for="">
-                        Cor: <input type="text">
-                    </label>
-                   
-                </form>
+    <form action="">
+    <div class="placa">
+        <label for="placa">Placa:</label>
+        <input type="text" id="placa">
+    </div>
+
+    <div class="modelo">
+        <label for="modelo">Modelo:</label>
+        <input type="text" id="modelo" >
+    </div>
+
+    <div class="cor">
+        <label for="cor">Cor:</label>
+        <input type="text" id="cor" >
+    </div>
+</form>
 </div>
             </div>
-<button>Cadastrar</button>
+<button id="cadastro">Cadastrar</button>
         </section>
     </main>
+    <script src="/dist/ts/cadastro.js"></script>
 </body>
 
 </html>
