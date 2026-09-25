@@ -44,8 +44,13 @@ db.exec(`
 `);
 
 async function criarUsuarioDemo() {
-    const email = process.env.DEMO_EMAIL;
-    const senhaPura = process.env.DEMO_SENHA;
+    // Estrutura correta
+
+    // const email = process.env.DEMO_EMAIL;
+    // const senhaPura = process.env.DEMO_SENHA;
+
+    const email = "dani@email.com"
+const senhaPura = 123456
 
     if (!email || !senhaPura) {
         console.log('DEMO_EMAIL ou DEMO_SENHA não definidos no .env — seed ignorado.');

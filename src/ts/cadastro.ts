@@ -10,36 +10,40 @@ let modelo = document.querySelector<HTMLInputElement>("#modelo")!
 let cor = document.querySelector<HTMLInputElement>("#cor")!
 
 
-let button = document.querySelector<HTMLButtonElement>("#buttoncadastro")
+let button = document.querySelector<HTMLButtonElement>("#buttoncadastro")!
 
-// const testeCpf = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/;
-// const testeTelefone = /^\(\d{2}\) \d{5}-\d{4}$/;
+    const elementos = { nomeInput, cpfInput, telefoneInput, tempoInput, select, placa, modelo, cor, button };
 
-// function validacao(): boolean {
-//     if (
-//         nomeInput.value.trim() ||
-//         cpfInput.value.trim() ||
-//         telefoneInput.value.trim() ||
-//         placa.value.trim() ||
-//         modelo.value.trim() ||
-//         cor.value.trim()
-//     ) {
-//         alert("Preencha todos os campos.");
-//         return false;
-//     }
+for (const [nome, el] of Object.entries(elementos)) {
+    if (!el) {
+        throw new Error(`Elemento "${nome}" não encontrado no HTML.`);
+    }
+}
 
-//     if (!testeCpf.test(cpfInput.value)) {
-//         alert("CPF inválido.");
-//         return false;
-//     }
 
-//     if (!testeTelefone.test(telefoneInput.value)) {
-//         alert("Telefone inválido.");
-//         return false;
-//     }
+const testeCpf = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/;
+const testeTelefone = /^\(\d{2}\) \d{5}-\d{4}$/;
+const MODO_TESTE = true; // troca pra false quando for validar de verdade
 
-//     return true;
-// }
+function validacao(): boolean {
+    if (MODO_TESTE) return true; // pula validação em teste
+
+    const campos = [nomeInput, cpfInput, telefoneInput, placa, modelo, cor];
+    if (campos.some(el => !el?.value.trim())) {
+        alert("Preencha todos os campos.");
+        return false;
+    }
+    if (!testeCpf.test(cpfInput!.value.trim())) {
+        alert("CPF inválido.");
+        return false;
+    }
+    if (!testeTelefone.test(telefoneInput!.value.trim())) {
+        alert("Telefone inválido.");
+        return false;
+    }
+    return true;
+}
+
 
 
 
@@ -53,9 +57,9 @@ function  ParaMinutos(numero:number,uni:string):number {
 button?.addEventListener("click", async () => {
 
 
-//  if(!validacao()){
-//     return
-//  }
+ if(!validacao()){
+    return
+ }
  const numero = Number(tempoInput.value);
 
   if(!numero || numero<= 0){
@@ -63,28 +67,32 @@ button?.addEventListener("click", async () => {
     return
   }
 
-    const TempoEmMinutos = ParaMinutos(Number(tempoInput.value), select.value);
- 
+    const TempoEmMinutos = ParaMinutos(numero, select.value);
+
+ let respostadoCadastro: { erro?: string };
+
+button.disabled = true
+
+
     try{
 
-   
     let cadastro = await fetch('http://localhost:3000/Cadastro', {
-        method: 'Post',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            nome: nomeInput?.value,
-            cpf: cpfInput?.value,
-            telefone: telefoneInput?.value,
+            nome: nomeInput.value.trim(),
+            cpf: cpfInput.value.trim(),
+            telefone: telefoneInput.value.trim(),
             tempo: TempoEmMinutos,
-            placa: placa?.value,
-            modelo: modelo?.value,
-            cor: cor?.value
+            placa: placa.value.trim(),
+            modelo: modelo.value.trim(),
+            cor: cor.value.trim()
         })
     })
  
-    let respostadoCadastro = await cadastro.json()
+   respostadoCadastro = await cadastro.json()
 
  if (!cadastro.ok) {
             alert(respostadoCadastro.erro);
@@ -94,9 +102,14 @@ button?.addEventListener("click", async () => {
 }
 
  catch (erro) {
+  
         // o fetch nem conseguiu falar com o servidor
         console.log("Erro ao se conectar ao servidor", erro);
         alert("Não foi possível conectar ao servidor");
+        return
+    }
+    finally{
+        button.disabled = false  
     }
    
 })
