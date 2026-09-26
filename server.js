@@ -3,6 +3,9 @@ import database from 'better-sqlite3';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import 'dotenv/config';
+import jwt from 'jsonwebtoken'
+
+
 
 const app = express();
 app.use(express.json());
@@ -43,14 +46,13 @@ db.exec(`
    )
 `);
 
-async function criarUsuarioDemo() {
-    // Estrutura correta
+async function criarUsuario() {
 
-    // const email = process.env.DEMO_EMAIL;
-    // const senhaPura = process.env.DEMO_SENHA;
 
-    const email = "dani@email.com"
-const senhaPura = 123456
+    const email = process.env.DEMO_EMAIL;
+    const senhaPura = process.env.DEMO_SENHA;
+
+
 
     if (!email || !senhaPura) {
         console.log('DEMO_EMAIL ou DEMO_SENHA não definidos no .env — seed ignorado.');
@@ -63,7 +65,7 @@ const senhaPura = 123456
         inserir.run(email, senhaHash);
         console.log('Usuário demo criado com sucesso.');
     } catch (erro) {
-       
+
         if (erro.message.includes('UNIQUE')) {
             console.log('Usuário demo já existe, seed ignorado.');
         } else {
@@ -72,11 +74,26 @@ const senhaPura = 123456
     }
 }
 
-await criarUsuarioDemo();
+await criarUsuario();
 
+function autenticar(req,res,next){
+    const token = req.headers.authorization.split('')[1];
+    if(!token){
+        return res.status(401).json({erro:'Token nao fornecido'})
+    
+    
+        try{
+            req.usuario = jwt.verify(token,process.env.JWT_SECRET)
+            next()
+        }
+        catch{
+            res.status(401).json({erro:'Token invalido ou expirado'})
+        }
 
+    }
+}
 
-app.post('/login', async (req, res) => {
+app.post('/login',autenticar, async (req, res) => {
     try {
         const { email, senha } = req.body;
 
@@ -96,40 +113,44 @@ app.post('/login', async (req, res) => {
         if (!senhaCorreta) {
             return res.status(401).json({ erro: 'Email ou senha inválidos' });
         }
-
-        res.json({ mensagem: 'Login realizado com sucesso', status: true });
+        const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.JWT_SECRET, { expiresIn: '8h' });
+        res.json({ mensagem: 'Login realizado com sucesso', status: true, token });
+     
 
     } catch (erro) {
         console.log('ERRO REAL no login:', erro.message);
         res.status(500).json({ erro: 'Erro ao realizar login' });
     }
-});                                     
+});
+
+
+
 const TOTAL_VAGAS = 60;
 
-const cadastraComVaga = db.transaction((dados)=>{
-    const {nome,cpf,telefone,tempo,placa,modelo,cor} = dados;
+const cadastraComVaga = db.transaction((dados) => {
+    const { nome, cpf, telefone, tempo, placa, modelo, cor } = dados;
 
     const resultado = db.prepare(`
         INSERT INTO CadastroCliente(nome,cpf,telefone,tempo,placa,modelo,cor,entrada)
-        VALUES (?,?,?,?,?,?,?,?)`).run(nome,cpf,telefone,tempo,placa,modelo,cor,Date.now());
-        const clienteId = resultado.lastInsertRowid;
+        VALUES (?,?,?,?,?,?,?,?)`).run(nome, cpf, telefone, tempo, placa, modelo, cor, Date.now());
+    const clienteId = resultado.lastInsertRowid;
 
 
-        const ocupada = db.prepare(`SELECT numero FROM vagas_ocupadas`)
-.all()
-.map(linha => linha.numero)
- 
-const livres = []
-  for (let n = 1; n <= TOTAL_VAGAS; n++) {
+    const ocupada = db.prepare(`SELECT numero FROM vagas_ocupadas`)
+        .all()
+        .map(linha => linha.numero)
+
+    const livres = []
+    for (let n = 1; n <= TOTAL_VAGAS; n++) {
         if (!ocupada.includes(n)) livres.push(n);
     }
 
-     if (livres.length === 0) {
+    if (livres.length === 0) {
         throw new Error('LOTADO');
     }
- const vaga = livres[Math.floor(Math.random() * livres.length)];
+    const vaga = livres[Math.floor(Math.random() * livres.length)];
 
-   
+
     db.prepare('INSERT INTO vagas_ocupadas (numero, cliente_id) VALUES (?, ?)')
         .run(vaga, clienteId);
 
@@ -137,24 +158,24 @@ const livres = []
 })
 
 
-app.post('/Cadastro', async (req, res) => {
+app.post('/Cadastro',autenticar, async (req, res) => {
     try {
         const { nome, cpf, telefone, tempo, placa, modelo, cor } = req.body;
 
-        if (!nome || !cpf || !telefone || !tempo || !placa || !modelo || !cor ) {
+        if (!nome || !cpf || !telefone || !tempo || !placa || !modelo || !cor) {
             return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
         }
 
-      const vaga = cadastraComVaga({ nome, cpf, telefone, tempo, placa, modelo, cor,});
+        const vaga = cadastraComVaga({ nome, cpf, telefone, tempo, placa, modelo, cor, });
 
-res.json({ mensagem: 'Cadastro realizado com sucesso', status: true, vaga });
+        res.json({ mensagem: 'Cadastro realizado com sucesso', status: true, vaga });
 
     } catch (erro) {
         console.log('ERRO REAL no cadastro:', erro.message);
 
-            if (erro.message === 'LOTADO') {
-    return res.status(409).json({ erro: 'Estacionamento lotado' });
-}
+        if (erro.message === 'LOTADO') {
+            return res.status(409).json({ erro: 'Estacionamento lotado' });
+        }
         if (erro.message.includes('UNIQUE')) {
             if (erro.message.includes('cpf')) {
                 return res.status(409).json({ erro: 'CPF já cadastrado' });
@@ -170,12 +191,12 @@ res.json({ mensagem: 'Cadastro realizado com sucesso', status: true, vaga });
 
         res.status(500).json({ erro: 'Erro ao cadastrar' });
 
-   
+
     }
 });
 
 
-app.get('/encontraMotorista', (req, res) => {
+app.get('/encontraMotorista',autenticar,(req, res) => {
     try {
         const { nomeDoCliente } = req.query;
 
@@ -191,7 +212,7 @@ app.get('/encontraMotorista', (req, res) => {
         }
 
         const { telefone, nome, placa, tempo, entrada } = motorista;
-        res.json({ telefone, nome, placa, tempo, entrada});
+        res.json({ telefone, nome, placa, tempo, entrada });
 
     } catch (erro) {
         console.log('ERRO REAL ao buscar motorista:', erro.message);
@@ -209,8 +230,8 @@ app.get('/vagas/ocupadas', (req, res) => {
             ON vagas_ocupadas.cliente_id = CadastroCliente.id`).all();
 
 
-        
-       
+
+
         res.json({ status: true, ocupadas: linhas });
     } catch (erro) {
         console.log('ERRO REAL ao listar vagas:', erro.message);
