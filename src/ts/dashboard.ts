@@ -6,12 +6,23 @@ let elementoVagasTotais = document.querySelector(".vagas-totais strong")!;
 
 
 
-let buttonCadastra = document.querySelector<HTMLButtonElement>(".cadastra")
-console.log("foi")
+const buttonCadastra = document.querySelector<HTMLButtonElement>(".cadastra")
+ const buscar = document.querySelector<HTMLButtonElement>("#buscar")
+
+
+// console.log("foi")
 buttonCadastra?.addEventListener("click",()=>{
    console.log("teste")
     window.location.href = "/src/pages/cadastro.html";
 })
+
+buscar?.addEventListener("click",()=>{
+   console.log("teste")
+    window.location.href = "/src/pages/motorista.html";
+})
+
+
+
 let mostra = document.createElement("button")
 mostra.innerHTML = `<i class="fa-solid fa-arrows-to-dot"></i>`;
 mostra.classList.add("mostra")
@@ -41,7 +52,7 @@ let vagasDisponiveis: number = vagasTotais - vagasOcupadas;
 elementoVagasDisponiveis.textContent = String(vagasDisponiveis);
 elementoVagasOcupadas.textContent = String(vagasOcupadas);
 elementoVagasTotais.textContent = String(vagasTotais);
-// estuda para melhor compeecao
+// estuda para melhor compreecao
 
 
 
@@ -60,6 +71,8 @@ async function criarcardsposicao() {
     elementoVagasOcupadas.textContent = String(ocupadas.size);
     elementoVagasDisponiveis.textContent = String(vagasTotais - ocupadas.size);
 
+
+   
     posicaoVagas.innerHTML = "";
     const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -84,6 +97,7 @@ async function criarcardsposicao() {
 }
 
 criarcardsposicao();
+
 
 
 async function Formata() {
@@ -126,7 +140,7 @@ async function avisarCliente(numero: number) {
     const dados = await resposta.json();
 
     if (!resposta.ok) {
-        alert(dados.erro);   // "Cliente já foi avisado", por exemplo
+        alert(dados.erro);   
         return;
     }
 

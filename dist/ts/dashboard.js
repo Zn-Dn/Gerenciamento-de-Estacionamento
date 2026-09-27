@@ -2,11 +2,16 @@
 let elementoVagasDisponiveis = document.querySelector(".vagas-disponiveis strong");
 let elementoVagasOcupadas = document.querySelector(".vagas-ocupadas strong");
 let elementoVagasTotais = document.querySelector(".vagas-totais strong");
-let buttonCadastra = document.querySelector(".cadastra");
-console.log("foi");
+const buttonCadastra = document.querySelector(".cadastra");
+const buscar = document.querySelector("#buscar");
+// console.log("foi")
 buttonCadastra?.addEventListener("click", () => {
     console.log("teste");
     window.location.href = "/src/pages/cadastro.html";
+});
+buscar?.addEventListener("click", () => {
+    console.log("teste");
+    window.location.href = "/src/pages/motorista.html";
 });
 let mostra = document.createElement("button");
 mostra.innerHTML = `<i class="fa-solid fa-arrows-to-dot"></i>`;
@@ -31,7 +36,7 @@ let vagasDisponiveis = vagasTotais - vagasOcupadas;
 elementoVagasDisponiveis.textContent = String(vagasDisponiveis);
 elementoVagasOcupadas.textContent = String(vagasOcupadas);
 elementoVagasTotais.textContent = String(vagasTotais);
-// estuda para melhor compeecao
+// estuda para melhor compreecao
 async function criarcardsposicao() {
     const posicaoVagas = document.querySelector(".posicao-carros");
     if (!posicaoVagas)
@@ -89,7 +94,7 @@ async function avisarCliente(numero) {
     });
     const dados = await resposta.json();
     if (!resposta.ok) {
-        alert(dados.erro); // "Cliente já foi avisado", por exemplo
+        alert(dados.erro);
         return;
     }
     window.open(dados.link, "_blank"); // abre o WhatsApp com a mensagem pronta

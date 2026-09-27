@@ -1,19 +1,19 @@
-let InputPesquisa = document.querySelector<HTMLInputElement>("#pesquisa input");
-let Nome = document.querySelector("#nome")!;
-let Telefone = document.querySelector("#telefone")!;
-let Placa = document.querySelector("#placa")!;
-let Tempo = document.querySelector("#tempo")!;
-let entrada = document.querySelector<HTMLInputElement>("#entrada")
-let sainda = document.querySelector<HTMLInputElement>("#sainda")
-let buttonBuscar = document.querySelector<HTMLButtonElement>("#busca")
-console.log("teste")
+const InputPesquisa = document.querySelector<HTMLInputElement>("#pesquisa input");
 
+const Nome = document.querySelector<HTMLElement>("#nome");
+const Telefone = document.querySelector<HTMLElement>("#telefone");
+const Placa = document.querySelector<HTMLElement>("#placa");
+const Tempo = document.querySelector<HTMLElement>("#tempo");
 
-// estuda logica
+const entrada = document.querySelector<HTMLElement>("#entrada");
+const sainda = document.querySelector<HTMLElement>("#sainda");
 
+const buttonBuscar = document.querySelector<HTMLButtonElement>("#busca");
+const contador = document.querySelector<HTMLElement>("#contador");
 
-let contador = document.querySelector("#contador")!;   // novo: crie esse elemento no HTML
-let intervalo: number | undefined;                      // guarda o setInterval atual
+console.log("teste");
+
+let intervalo: number | undefined;
 
 function formatarTempo(minutos: number): string {
     const h = Math.floor(minutos / 60);
@@ -21,64 +21,116 @@ function formatarTempo(minutos: number): string {
 
     if (h === 0) return `${m} min`;
     if (m === 0) return `${h}h`;
+
     return `${h}h ${m}min`;
 }
 
-
 async function enviarReqDeBusca() {
-    const nomeDigitado = InputPesquisa?.value ?? "";
 
-    const respostaDoBack = await fetch(
-        `/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
-    );
+    clearInterval(intervalo);
 
-    clearInterval(intervalo);   
+    const nomeDigitado = InputPesquisa?.value.trim() ?? "";
 
-    if (!respostaDoBack.ok) {
-        Nome.textContent = "";
-        Telefone.textContent = "";
-        Placa.textContent = "";
-        Tempo.textContent = "";
-        contador.textContent = "";
-        if (entrada) entrada.textContent = "";
-        if (sainda) sainda.textContent = "";
-        console.log("Motorista não encontrado");
+    if (!nomeDigitado) {
+        console.log("Digite um nome para pesquisar.");
         return;
     }
 
-    const dados = await respostaDoBack.json();
+    try {
 
-    const horaEntrada = new Date(dados.entrada);
-    const saidaEmMs = dados.entrada + dados.tempo * 60 * 1000;
-    const horaSaida = new Date(saidaEmMs);
+        const respostaDoBack = await fetch(
+            `/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
+        );
 
-    const formato: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit" };
+        if (!respostaDoBack.ok) {
 
-    Nome.textContent = dados.nome;
-    Telefone.textContent = dados.telefone;
-    Placa.textContent = dados.placa;
-    Tempo.textContent = formatarTempo(dados.tempo);   // permanência
+            if (Nome) Nome.textContent = "";
+            if (Telefone) Telefone.textContent = "";
+            if (Placa) Placa.textContent = "";
+            if (Tempo) Tempo.textContent = "";
+            if (contador) contador.textContent = "";
+            if (entrada) entrada.textContent = "";
+            if (sainda) sainda.textContent = "";
 
-    if (entrada) entrada.textContent = horaEntrada.toLocaleTimeString("pt-BR", formato);
-    if (sainda) sainda.textContent = horaSaida.toLocaleTimeString("pt-BR", formato);
+            if (respostaDoBack.status === 404) {
+                console.log("Motorista não encontrado.");
+            } else {
+                console.log("Erro no servidor:", respostaDoBack.status);
+            }
 
-   
-    function atualizarContador() {
-        const restante = saidaEmMs - Date.now();
-
-        if (restante <= 0) {
-            contador.textContent = "Tempo esgotado";
-            clearInterval(intervalo);
             return;
         }
 
-        const minutos = Math.floor(restante / 60000);
-        const segundos = Math.floor((restante % 60000) / 1000);
-        contador.textContent = `${minutos}:${String(segundos).padStart(2, "0")}`;
-    }
+        const dados = await respostaDoBack.json();
 
-    atualizarContador();                               
-    intervalo = setInterval(atualizarContador, 1000);  
+        const horaEntrada = new Date(dados.entrada);
+
+        const saidaEmMs =
+            dados.entrada + dados.tempo * 60 * 1000;
+
+        const horaSaida = new Date(saidaEmMs);
+
+        const formato: Intl.DateTimeFormatOptions = {
+            hour: "2-digit",
+            minute: "2-digit"
+        };
+
+        if (Nome) Nome.textContent = dados.nome;
+        if (Telefone) Telefone.textContent = dados.telefone;
+        if (Placa) Placa.textContent = dados.placa;
+        if (Tempo) Tempo.textContent = formatarTempo(dados.tempo);
+
+        if (entrada) {
+            entrada.textContent =
+                horaEntrada.toLocaleTimeString("pt-BR", formato);
+        }
+
+        if (sainda) {
+            sainda.textContent =
+                horaSaida.toLocaleTimeString("pt-BR", formato);
+        }
+
+        function atualizarContador() {
+
+            const restante = saidaEmMs - Date.now();
+
+            if (restante <= 0) {
+
+                if (contador) {
+                    contador.textContent = "Tempo esgotado";
+                }
+
+                clearInterval(intervalo);
+                return;
+            }
+
+            const minutos = Math.floor(restante / 60000);
+
+            const segundos = Math.floor(
+                (restante % 60000) / 1000
+            );
+
+            if (contador) {
+                contador.textContent =
+                    `${minutos}:${String(segundos).padStart(2, "0")}`;
+            }
+        }
+
+        atualizarContador();
+
+        intervalo = window.setInterval(
+            atualizarContador,
+            1000
+        );
+
+    } catch (erro) {
+
+        console.error("Erro ao buscar motorista:", erro);
+
+        if (contador) {
+            contador.textContent = "Erro na busca";
+        }
+    }
 }
 
 buttonBuscar?.addEventListener("click", () => {

@@ -82,24 +82,24 @@ async function criarUsuario() {
 
 await criarUsuario();
 
-function autenticar(req,res,next){
-    const token = req.headers.authorization.split('')[1];
-    if(!token){
-        return res.status(401).json({erro:'Token nao fornecido'})
+// function autenticar(req,res,next){
+//     const token = req.headers.authorization.split('')[1];
+//     if(!token){
+//         return res.status(401).json({erro:'Token nao fornecido'})
     
     
-        try{
-            req.usuario = jwt.verify(token,process.env.JWT_SECRET)
-            next()
-        }
-        catch{
-            res.status(401).json({erro:'Token invalido ou expirado'})
-        }
+//         try{
+//             req.usuario = jwt.verify(token,process.env.JWT_SECRET)
+//             next()
+//         }
+//         catch{
+//             res.status(401).json({erro:'Token invalido ou expirado'})
+//         }
 
-    }
-}
+//     }
+// }
 
-app.post('/login',autenticar, async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
@@ -164,7 +164,7 @@ const cadastraComVaga = db.transaction((dados) => {
 })
 
 
-app.post('/Cadastro',autenticar, async (req, res) => {
+app.post('/Cadastro', async (req, res) => {
     try {
         const { nome, cpf, telefone, tempo, placa, modelo, cor } = req.body;
 
@@ -202,27 +202,43 @@ app.post('/Cadastro',autenticar, async (req, res) => {
 });
 
 
-app.get('/encontraMotorista',autenticar,(req, res) => {
+app.get('/encontraMotorista', (req, res) => {
     try {
-        const { nomeDoCliente } = req.query;
+
+        const nomeDoCliente = String(
+            req.query.nomeDoCliente ?? ""
+        ).trim();
 
         if (!nomeDoCliente) {
-            return res.status(400).json({ erro: 'Parâmetro "nomeDoCliente" é obrigatório' });
+            return res.status(400).json({
+                erro: "Nome é obrigatório"
+            });
         }
 
-        const buscarMotorista = db.prepare('SELECT * FROM CadastroCliente WHERE nome = ?');
-        const motorista = buscarMotorista.get(nomeDoCliente);
+        const motorista = db.prepare(`
+            SELECT nome, telefone, placa, tempo, entrada
+            FROM CadastroCliente
+            WHERE nome = ?
+        `).get(nomeDoCliente);
 
         if (!motorista) {
-            return res.status(404).json({ mensagem: 'Informação não encontrada' });
+            return res.status(404).json({
+                erro: "Motorista não encontrado"
+            });
         }
 
-        const { telefone, nome, placa, tempo, entrada } = motorista;
-        res.json({ telefone, nome, placa, tempo, entrada });
+        res.json(motorista);
 
     } catch (erro) {
-        console.log('ERRO REAL ao buscar motorista:', erro.message);
-        res.status(500).json({ erro: 'Erro ao buscar motorista' });
+
+        console.error(
+            "ERRO REAL ao buscar motorista:",
+            erro
+        );
+
+        res.status(500).json({
+            erro: "Erro ao buscar motorista"
+        });
     }
 });
 
@@ -247,7 +263,7 @@ app.get('/vagas/ocupadas', (req, res) => {
 const LIMITE_AVISO = 5 * 60 * 1000;   // 5 minutos
 
 async function enviarMensagem(telefone, texto) {
-    // Por enquanto só imprime, para testar a lógica.
+    
     console.log(`ENVIANDO para ${telefone}: ${texto}`);
 }
 
