@@ -82,6 +82,7 @@ async function criarUsuario() {
 
 await criarUsuario();
 
+
 // function autenticar(req,res,next){
 //     const token = req.headers.authorization.split('')[1];
 //     if(!token){
@@ -98,6 +99,7 @@ await criarUsuario();
 
 //     }
 // }
+
 
 app.post('/login', async (req, res) => {
     try {
