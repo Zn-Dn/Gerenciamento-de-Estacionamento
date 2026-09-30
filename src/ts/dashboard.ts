@@ -12,12 +12,12 @@ const buttonCadastra = document.querySelector<HTMLButtonElement>(".cadastra")
 
 // console.log("foi")
 buttonCadastra?.addEventListener("click",()=>{
-   console.log("teste")
+  
     window.location.href = "/src/pages/cadastro.html";
 })
 
 buscar?.addEventListener("click",()=>{
-   console.log("teste")
+  
     window.location.href = "/src/pages/motorista.html";
 })
 
@@ -64,7 +64,7 @@ async function criarcardsposicao() {
     const verificar = await Vagasresposta.json();
     const ocupadas = new Set<number>(verificar.ocupadas.map((valor:any)=> valor.numero));
 
-// console.log(verificar)
+
   
 
 
@@ -92,13 +92,42 @@ async function criarcardsposicao() {
         posicaoVagas.appendChild(cardPosicao);
 
         cardPosicao.dataset.numero = String(i);
+// ///////////
+        cardPosicao.addEventListener("click",()=>{
+ const numero = cardPosicao.dataset.numero;
+
+    mostraInfor(numero);
+
+
+        })
     }
    return verificar.ocupadas
 }
 
 criarcardsposicao();
 
+async function mostraInfor(numero: string | undefined) {
+     if(!numero){
+        console.log("valor nao existe")
+        return
+    }
+   
+try{
+ const dadosdoback = await fetch(`http://localhost:3000/dadosCliente/${numero}`) 
 
+ const resultado = await dadosdoback.json()
+ console.log(resultado)
+}
+ catch (erro) {
+
+        console.log("Erro na requisição:", erro)
+
+        return
+
+    }
+
+
+}
 
 async function Formata() {
     let contador: number = 0;
@@ -121,7 +150,7 @@ else if (resto < LIMITE_PISCAR) {
 }
 
 let posicao =  time[contador].numero
-
+console.log(posicao)
 
         }
     }

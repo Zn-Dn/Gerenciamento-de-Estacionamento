@@ -21,18 +21,21 @@ entra.addEventListener("click", async () => {
 
     entra.disabled = true;
     try {
-        const respostaLogin = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                email: email.value.trim(),
-                senha: senha.value
-            })
-        });
+       const respostaLogin = await fetch("http://localhost:3000/login", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        email: email.value.trim(),
+        senha: senha.value
+    })
+});
 
         let resultado: { status?: boolean; erro?: string };
         try {
             resultado = await respostaLogin.json();
+           
         } catch {
             alert("Resposta inesperada do servidor.");
             return;

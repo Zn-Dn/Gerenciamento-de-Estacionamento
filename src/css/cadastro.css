@@ -88,7 +88,7 @@ main {
     display: block;
     width: 100%;
     padding: 0.8rem;
-    background-color: var(--cor-preto);
+      background-color: rgba(6, 203, 52, 0.755);
     color: var(--cor-branco);
     border: none;
     border-radius: 4px;
@@ -96,9 +96,9 @@ main {
     cursor: pointer;
     transition: background-color 0.2s;
 }
-
+ 
 .motorista-carro > button:hover {
-    background-color:#000000c9 ;
+  background-color: rgba(6, 203, 52, 0.558);
 }
 
 #escolharTempo{

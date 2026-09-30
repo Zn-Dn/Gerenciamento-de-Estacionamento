@@ -6,11 +6,9 @@ const buttonCadastra = document.querySelector(".cadastra");
 const buscar = document.querySelector("#buscar");
 // console.log("foi")
 buttonCadastra?.addEventListener("click", () => {
-    console.log("teste");
     window.location.href = "/src/pages/cadastro.html";
 });
 buscar?.addEventListener("click", () => {
-    console.log("teste");
     window.location.href = "/src/pages/motorista.html";
 });
 let mostra = document.createElement("button");
@@ -44,7 +42,6 @@ async function criarcardsposicao() {
     const Vagasresposta = await fetch("http://localhost:3000/vagas/ocupadas");
     const verificar = await Vagasresposta.json();
     const ocupadas = new Set(verificar.ocupadas.map((valor) => valor.numero));
-    // console.log(verificar)
     elementoVagasOcupadas.textContent = String(ocupadas.size);
     elementoVagasDisponiveis.textContent = String(vagasTotais - ocupadas.size);
     posicaoVagas.innerHTML = "";
@@ -60,10 +57,30 @@ async function criarcardsposicao() {
         }
         posicaoVagas.appendChild(cardPosicao);
         cardPosicao.dataset.numero = String(i);
+        // ///////////
+        cardPosicao.addEventListener("click", () => {
+            const numero = cardPosicao.dataset.numero;
+            mostraInfor(numero);
+        });
     }
     return verificar.ocupadas;
 }
 criarcardsposicao();
+async function mostraInfor(numero) {
+    if (!numero) {
+        console.log("valor nao existe");
+        return;
+    }
+    try {
+        const dadosdoback = await fetch(`http://localhost:3000/dadosCliente/${numero}`);
+        const resultado = await dadosdoback.json();
+        console.log(resultado);
+    }
+    catch (erro) {
+        console.log("Erro na requisição:", erro);
+        return;
+    }
+}
 async function Formata() {
     let contador = 0;
     let time = await criarcardsposicao();
@@ -82,6 +99,7 @@ async function Formata() {
                 cardvagaalert?.classList.add("piscando");
             }
             let posicao = time[contador].numero;
+            console.log(posicao);
         }
     }
     verificar();

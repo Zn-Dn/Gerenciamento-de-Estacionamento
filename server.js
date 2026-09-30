@@ -15,9 +15,9 @@ app.use(cors());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, "public")));
 
- const db = new database('banco.db');
+
+const db = new database('banco.db');
 
 
 
@@ -83,22 +83,7 @@ async function criarUsuario() {
 await criarUsuario();
 
 
-// function autenticar(req,res,next){
-//     const token = req.headers.authorization.split('')[1];
-//     if(!token){
-//         return res.status(401).json({erro:'Token nao fornecido'})
-    
-    
-//         try{
-//             req.usuario = jwt.verify(token,process.env.JWT_SECRET)
-//             next()
-//         }
-//         catch{
-//             res.status(401).json({erro:'Token invalido ou expirado'})
-//         }
 
-//     }
-// }
 
 
 app.post('/login', async (req, res) => {
@@ -123,7 +108,7 @@ app.post('/login', async (req, res) => {
         }
         const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.JWT_SECRET, { expiresIn: '8h' });
         res.json({ mensagem: 'Login realizado com sucesso', status: true, token });
-     
+
 
     } catch (erro) {
         console.log('ERRO REAL no login:', erro.message);
@@ -204,6 +189,7 @@ app.post('/Cadastro', async (req, res) => {
 });
 
 
+
 app.get('/encontraMotorista', (req, res) => {
     try {
 
@@ -246,7 +232,7 @@ app.get('/encontraMotorista', (req, res) => {
 
 
 
-//  estudad logica e seus componentes e conexao
+
 app.get('/vagas/ocupadas', (req, res) => {
     try {
         const linhas = db.prepare(`SELECT vagas_ocupadas.numero,CadastroCliente.tempo,CadastroCliente.entrada 
@@ -257,17 +243,80 @@ app.get('/vagas/ocupadas', (req, res) => {
 
 
         res.json({ status: true, ocupadas: linhas });
-    } catch (erro) {
+    }
+
+
+    catch (erro) {
         console.log('ERRO REAL ao listar vagas:', erro.message);
         res.status(500).json({ erro: 'Erro ao listar vagas' });
     }
 });
+
+
+app.get("/dadosCliente/:numero", (req, res) => {
+
+    try {
+
+        const dados = req.params.numero;
+
+        console.log(dados);
+
+        if (!dados) {
+            return res.status(400).json({
+                mensagem: "Valor não existe"
+            });
+        }
+
+        const resultadodados = db.prepare(`
+            SELECT
+                vagas_ocupadas.numero,
+                CadastroCliente.id,
+                CadastroCliente.nome,
+                CadastroCliente.telefone,
+                CadastroCliente.tempo,
+                CadastroCliente.placa,
+                CadastroCliente.modelo,
+                CadastroCliente.cor,
+                CadastroCliente.entrada
+            FROM vagas_ocupadas
+            INNER JOIN CadastroCliente
+                ON vagas_ocupadas.cliente_id = CadastroCliente.id
+            WHERE vagas_ocupadas.numero = ?
+        `).get(dados);
+
+        console.log("RESULTADO DO BANCO:", resultadodados);
+
+        if (!resultadodados) {
+            return res.status(404).json({
+                mensagem: "Nenhum cliente encontrado nessa vaga"
+            });
+        }
+
+        res.status(200).json({
+            mensagem: "Informações encontradas",
+            informacoes: resultadodados
+        });
+
+    } catch (erro) {
+
+        console.log("ERRO REAL:", erro);
+
+        res.status(500).json({
+            erro: "Erro interno do servidor"
+        });
+
+    }
+
+});
+
+
 const LIMITE_AVISO = 5 * 60 * 1000;   // 5 minutos
 
 async function enviarMensagem(telefone, texto) {
-    
+
     console.log(`ENVIANDO para ${telefone}: ${texto}`);
 }
+
 
 async function verificarAvisos() {
     try {
@@ -301,7 +350,13 @@ async function verificarAvisos() {
 
 setInterval(verificarAvisos, 30 * 1000);
 
-const PORT = process.env.PORT;
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+
+
+
+
+

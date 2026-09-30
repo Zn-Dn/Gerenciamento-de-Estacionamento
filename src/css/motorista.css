@@ -84,7 +84,7 @@ main {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: #6b7280;
+    color: #000;
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -127,9 +127,11 @@ main {
 
 button{
     margin-top: 10px;
-    background-color: var(--cor-cinza);
+   background-color: rgba(6, 203, 52, 0.755);
     border: none;
     color: var( --cor-branco);
+    font-weight: 700;
+    font-size: 1rem;
     padding: 10px;
     width: auto;
     border-radius: 10px;
@@ -138,5 +140,5 @@ button{
 
 button:hover{
     
-    background-color: var(--cor-hover);
+   background-color: rgba(6, 203, 52, 0.558);  
 }
