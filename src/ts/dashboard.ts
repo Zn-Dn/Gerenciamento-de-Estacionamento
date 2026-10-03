@@ -54,7 +54,7 @@ elementoVagasOcupadas.textContent = String(vagasOcupadas);
 elementoVagasTotais.textContent = String(vagasTotais);
 // estuda para melhor compreecao
 
-
+let cardAberto: boolean = false;
 
 async function criarcardsposicao() {
     const posicaoVagas = document.querySelector<HTMLElement>(".posicao-carros");
@@ -95,12 +95,19 @@ async function criarcardsposicao() {
 
   
         cardPosicao.addEventListener("click",()=>{
+
+           
  const numero = cardPosicao.dataset.numero;
 
-    mostraInfor(numero);
- 
-  
 
+if(cardAberto){
+    return
+}
+else{
+  cardAberto = true;
+  mostraInfor(numero);   
+}
+   
         })
     }
    return verificar.ocupadas
@@ -126,7 +133,7 @@ async function mostraInfor(numero: string | undefined) {
         const resultado = await dadosdoback.json();
 
         mostraInforTela(resultado.informacoes);
-
+        calcularhoraeminutos(resultado.informacoes.entrada, resultado.informacoes.tempo);
     } catch (erro) {
         console.log("Erro na requisição:", erro);
     }
@@ -144,8 +151,21 @@ interface Cliente {
 let cardAtual = true
 
 
+function calcularhoraeminutos(entrada: number, tempo: number) {
+  let sainda  = entrada + tempo
+  let tempo1 = new Date(sainda)
+ 
+
+  let horario = tempo1.toLocaleTimeString()
+  return horario
+ 
+  
+}
+
+
 
 function mostraInforTela(resultado: Cliente) {
+ const horarioSaida = calcularhoraeminutos(resultado.entrada, resultado.tempo);
 
       const card = document.createElement("div");
 
@@ -154,47 +174,55 @@ function mostraInforTela(resultado: Cliente) {
 card.addEventListener("mousemove",(event)=>{
  iniciarArraste(event, card); });
 
+
    card.addEventListener("mouseup", pararArraste);
+
+
 
     card.classList.add("card-cliente");
     const form = document.createElement("form")
+form.classList.add("formulario")
+
     const titulo = document.createElement("h3");
     titulo.classList.add("titulo");
     titulo.textContent = resultado.nome;
 
-    const nome = document.createElement("p");
-    nome.textContent = resultado.nome;
+    const sainda = document.createElement("p");
+sainda.textContent = `Sainda: ${horarioSaida}` ;
 
     const telefone = document.createElement("p");
-    telefone.textContent = resultado.telefone;
+    telefone.textContent =  `Telefone: ${resultado.telefone}`;
 
     const modelo = document.createElement("p");
-    modelo.textContent = resultado.modelo;
+    modelo.textContent = `Modelo: ${resultado.modelo}`;
 
     const placa = document.createElement("p");
-    placa.textContent = resultado.placa;
+    placa.textContent = `Placa: ${resultado.placa}`;
 
     const fechar = document.createElement("button")
     fechar.textContent = "X";
+fechar.classList.add("fechar")
+
 fechar.addEventListener("click",()=>{
     card.remove()
+    cardAberto = false;
     cardAtual = true
 })
    
 
    
-    card.append(form)
+    card.append(fechar,form)
     form.append(
-        fechar,
+        
         titulo,
-        nome,
+        sainda,
         telefone,
         modelo,
         placa
        
     );
      document.querySelector("main")!.appendChild(card);
-
+   
 
    
 
@@ -204,7 +232,7 @@ return card
 
 // button de click de ambas funcoes,pega a posicao inicial,inicia como true soma com o arraste
 
-let estadoDeAcao = true
+let estadoDeAcao = false;
 
 function iniciar() {
 
@@ -219,6 +247,9 @@ function iniciarArraste(event: MouseEvent, card: HTMLElement) {
     
 const mouseX  = event.clientX;
 const mouseY  = event.clientY;
+
+// offsetleft e top dizem onde o card está
+//offsetwidth e offsetHeight   dizem o tamanho dele.
 
 const valorcardX = card.offsetLeft + card.offsetWidth /2; ;
 const valorcardY = card.offsetTop + card.offsetHeight /2;;
@@ -239,7 +270,7 @@ function pararArraste() {
 async function Formata() {
     let contador: number = 0;
     let time = await criarcardsposicao();
-console.log(time)
+
     function verificar() {
         for (contador = 0; contador < time.length; contador++) {
 

@@ -15,16 +15,16 @@ console.log("teste");
 
 let intervalo: number | undefined;
 
-function formatarTempo(minutos: number): string {
-    const h = Math.floor(minutos / 60);
-    const m = minutos % 60;
+function formatarTempo(tempoEmMs: number): string {
+
+    const h = Math.floor(tempoEmMs / 3600000);
+    const m = Math.floor((tempoEmMs % 3600000) / 60000);
 
     if (h === 0) return `${m} min`;
     if (m === 0) return `${h}h`;
 
     return `${h}h ${m}min`;
 }
-
 async function enviarReqDeBusca() {
 
     clearInterval(intervalo);
@@ -39,7 +39,7 @@ async function enviarReqDeBusca() {
     try {
 
         const respostaDoBack = await fetch(
-            `/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
+            `http://localhost:3000/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
         );
 
         if (!respostaDoBack.ok) {
@@ -66,7 +66,7 @@ async function enviarReqDeBusca() {
         const horaEntrada = new Date(dados.entrada);
 
         const saidaEmMs =
-            dados.entrada + dados.tempo * 60 * 1000;
+            dados.entrada + dados.tempo
 
         const horaSaida = new Date(saidaEmMs);
 
@@ -85,6 +85,7 @@ async function enviarReqDeBusca() {
                 horaEntrada.toLocaleTimeString("pt-BR", formato);
         }
 
+        // sainda esta errando ela deve ser somada com o tempo 
         if (sainda) {
             sainda.textContent =
                 horaSaida.toLocaleTimeString("pt-BR", formato);

@@ -41,7 +41,7 @@ for (const [nome, el] of Object.entries(elementos)) {
 
 function ParaMinutos(numero: number, uni: string): number {
 
-    return uni === "horas" ? numero * 60 : numero
+    return uni === "horas" ? numero * 3600000 : numero * 60000
 
 }
 
@@ -57,7 +57,7 @@ button?.addEventListener("click", async () => {
 
     }
 
-    const TempoEmMinutos = ParaMinutos(numero, select.value)
+    const TempoEmMilisegundos = ParaMinutos(numero, select.value)
 
     let respostadoCadastro: { erro?: string }
 
@@ -83,7 +83,7 @@ button?.addEventListener("click", async () => {
 
                 telefone: telefoneInput.value.trim(),
 
-                tempo: TempoEmMinutos,
+                tempo: TempoEmMilisegundos,
 
                 placa: placa.value.trim(),
 

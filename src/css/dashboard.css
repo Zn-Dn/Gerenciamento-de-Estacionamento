@@ -36,6 +36,28 @@ main {
 }
 .card-cliente .titulo{
     text-align: center;
+    color: white;
+    font-size: 2rem;
+}
+
+.card-cliente .formulario{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.formulario p{
+    color: white;
+   border-bottom: 1px solid white;
+}
+.card-cliente .fechar{
+   background-color: white;
+   width: 30px;
+   padding: 10px;
+   color: red;
+   border:none;
+   border-radius: 10px;
 }
 .mostra {
     position: absolute;

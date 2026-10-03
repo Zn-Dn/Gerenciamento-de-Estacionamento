@@ -25,7 +25,7 @@ for (const [nome, el] of Object.entries(elementos)) {
     }
 }
 function ParaMinutos(numero, uni) {
-    return uni === "horas" ? numero * 60 : numero;
+    return uni === "horas" ? numero * 3600000 : numero * 60000;
 }
 button?.addEventListener("click", async () => {
     const numero = Number(tempoInput.value);
@@ -33,7 +33,7 @@ button?.addEventListener("click", async () => {
         alert("Digite um valor valido");
         return;
     }
-    const TempoEmMinutos = ParaMinutos(numero, select.value);
+    const TempoEmMilisegundos = ParaMinutos(numero, select.value);
     let respostadoCadastro;
     button.disabled = true;
     try {
@@ -46,7 +46,7 @@ button?.addEventListener("click", async () => {
                 nome: nomeInput.value.trim(),
                 cpf: cpfInput.value.trim(),
                 telefone: telefoneInput.value.trim(),
-                tempo: TempoEmMinutos,
+                tempo: TempoEmMilisegundos,
                 placa: placa.value.trim(),
                 modelo: modelo.value.trim(),
                 cor: cor.value.trim()

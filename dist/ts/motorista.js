@@ -10,9 +10,9 @@ const buttonBuscar = document.querySelector("#busca");
 const contador = document.querySelector("#contador");
 console.log("teste");
 let intervalo;
-function formatarTempo(minutos) {
-    const h = Math.floor(minutos / 60);
-    const m = minutos % 60;
+function formatarTempo(tempoEmMs) {
+    const h = Math.floor(tempoEmMs / 3600000);
+    const m = Math.floor((tempoEmMs % 3600000) / 60000);
     if (h === 0)
         return `${m} min`;
     if (m === 0)
@@ -27,7 +27,7 @@ async function enviarReqDeBusca() {
         return;
     }
     try {
-        const respostaDoBack = await fetch(`/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`);
+        const respostaDoBack = await fetch(`http://localhost:3000/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`);
         if (!respostaDoBack.ok) {
             if (Nome)
                 Nome.textContent = "";
@@ -53,7 +53,7 @@ async function enviarReqDeBusca() {
         }
         const dados = await respostaDoBack.json();
         const horaEntrada = new Date(dados.entrada);
-        const saidaEmMs = dados.entrada + dados.tempo * 60 * 1000;
+        const saidaEmMs = dados.entrada + dados.tempo;
         const horaSaida = new Date(saidaEmMs);
         const formato = {
             hour: "2-digit",
@@ -71,6 +71,7 @@ async function enviarReqDeBusca() {
             entrada.textContent =
                 horaEntrada.toLocaleTimeString("pt-BR", formato);
         }
+        // sainda esta errando ela deve ser somada com o tempo 
         if (sainda) {
             sainda.textContent =
                 horaSaida.toLocaleTimeString("pt-BR", formato);
