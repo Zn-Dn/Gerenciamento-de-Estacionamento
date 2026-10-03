@@ -57,7 +57,6 @@ async function criarcardsposicao() {
         }
         posicaoVagas.appendChild(cardPosicao);
         cardPosicao.dataset.numero = String(i);
-        // ///////////
         cardPosicao.addEventListener("click", () => {
             const numero = cardPosicao.dataset.numero;
             mostraInfor(numero);
@@ -67,19 +66,73 @@ async function criarcardsposicao() {
 }
 criarcardsposicao();
 async function mostraInfor(numero) {
-    if (!numero) {
-        console.log("valor nao existe");
+    if (!numero)
         return;
-    }
     try {
         const dadosdoback = await fetch(`http://localhost:3000/dadosCliente/${numero}`);
+        if (!dadosdoback.ok) {
+            console.log("Erro HTTP:", dadosdoback.status);
+            return;
+        }
         const resultado = await dadosdoback.json();
-        console.log(resultado);
+        mostraInforTela(resultado.informacoes);
     }
     catch (erro) {
         console.log("Erro na requisição:", erro);
-        return;
     }
+}
+let cardAtual = true;
+function mostraInforTela(resultado) {
+    const card = document.createElement("div");
+    card.addEventListener("mousedown", iniciar);
+    card.addEventListener("mousemove", (event) => {
+        iniciarArraste(event, card);
+    });
+    card.addEventListener("mouseup", pararArraste);
+    card.classList.add("card-cliente");
+    const form = document.createElement("form");
+    const titulo = document.createElement("h3");
+    titulo.classList.add("titulo");
+    titulo.textContent = resultado.nome;
+    const nome = document.createElement("p");
+    nome.textContent = resultado.nome;
+    const telefone = document.createElement("p");
+    telefone.textContent = resultado.telefone;
+    const modelo = document.createElement("p");
+    modelo.textContent = resultado.modelo;
+    const placa = document.createElement("p");
+    placa.textContent = resultado.placa;
+    const fechar = document.createElement("button");
+    fechar.textContent = "X";
+    fechar.addEventListener("click", () => {
+        card.remove();
+        cardAtual = true;
+    });
+    card.append(form);
+    form.append(fechar, titulo, nome, telefone, modelo, placa);
+    document.querySelector("main").appendChild(card);
+    return card;
+}
+// button de click de ambas funcoes,pega a posicao inicial,inicia como true soma com o arraste
+let estadoDeAcao = true;
+function iniciar() {
+    estadoDeAcao = true;
+}
+function iniciarArraste(event, card) {
+    if (estadoDeAcao) {
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+        const valorcardX = card.offsetLeft + card.offsetWidth / 2;
+        ;
+        const valorcardY = card.offsetTop + card.offsetHeight / 2;
+        ;
+        const distanciaX = mouseX - valorcardX;
+        const distanciaY = mouseY - valorcardY;
+        card.style.transform = `translate(${distanciaX}px, ${distanciaY}px)`;
+    }
+}
+function pararArraste() {
+    estadoDeAcao = false;
 }
 async function Formata() {
     let contador = 0;
@@ -98,8 +151,6 @@ async function Formata() {
             else if (resto < LIMITE_PISCAR) {
                 cardvagaalert?.classList.add("piscando");
             }
-            let posicao = time[contador].numero;
-            console.log(posicao);
         }
     }
     verificar();

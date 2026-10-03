@@ -269,14 +269,11 @@ app.get("/dadosCliente/:numero", (req, res) => {
 
         const resultadodados = db.prepare(`
             SELECT
-                vagas_ocupadas.numero,
-                CadastroCliente.id,
                 CadastroCliente.nome,
                 CadastroCliente.telefone,
                 CadastroCliente.tempo,
                 CadastroCliente.placa,
                 CadastroCliente.modelo,
-                CadastroCliente.cor,
                 CadastroCliente.entrada
             FROM vagas_ocupadas
             INNER JOIN CadastroCliente

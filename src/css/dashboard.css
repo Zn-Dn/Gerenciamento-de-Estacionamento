@@ -20,8 +20,23 @@ main {
     display: flex;
     flex-direction: column;
     background-color:#EFF6FF ;
+    position: relative;
 }
-
+.card-cliente{
+    background-color: #1E3A8A;
+    width: 300px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+   position: absolute;
+   right: 0;
+   top: 200px;
+   
+}
+.card-cliente .titulo{
+    text-align: center;
+}
 .mostra {
     position: absolute;
     right: 20px;
