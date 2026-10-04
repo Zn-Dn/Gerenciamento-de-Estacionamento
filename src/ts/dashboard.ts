@@ -60,7 +60,7 @@ async function criarcardsposicao() {
     const posicaoVagas = document.querySelector<HTMLElement>(".posicao-carros");
     if (!posicaoVagas) return;
 
-    const Vagasresposta = await fetch("http://localhost:3000/vagas/ocupadas");
+    const Vagasresposta = await fetch("/vagas/ocupadas");
     const verificar = await Vagasresposta.json();
     const ocupadas = new Set<number>(verificar.ocupadas.map((valor:any)=> valor.numero));
 
@@ -122,7 +122,7 @@ async function mostraInfor(numero: string | undefined) {
 
     try {
         const dadosdoback = await fetch(
-            `http://localhost:3000/dadosCliente/${numero}`
+            `/dadosCliente/${numero}`
         );
 
         if (!dadosdoback.ok) {
@@ -301,7 +301,7 @@ Formata();
 
 
 async function avisarCliente(numero: number) {
-    const resposta = await fetch(`http://localhost:3000/avisar/${numero}`, {
+    const resposta = await fetch(`/avisar/${numero}`, {
         method: "POST"
     });
     const dados = await resposta.json();

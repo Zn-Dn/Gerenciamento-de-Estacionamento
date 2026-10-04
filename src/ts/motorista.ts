@@ -39,7 +39,7 @@ async function enviarReqDeBusca() {
     try {
 
         const respostaDoBack = await fetch(
-            `http://localhost:3000/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
+            `/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
         );
 
         if (!respostaDoBack.ok) {
