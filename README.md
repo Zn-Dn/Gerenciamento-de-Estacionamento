@@ -4,5 +4,5 @@
 
 Para acessar o sistema, use as credenciais de demonstração:
 
-- **Email:** dani@email.com
-- **Senha:** 123456
+- **Email:** teste@exemplo.com
+- **Senha:** 1029

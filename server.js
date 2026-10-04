@@ -329,7 +329,7 @@ async function verificarAvisos() {
 
         // usando para repetir uma acao sem uma quantidade expecifica
         for (const cliente of clientes) {
-            const resto = cliente.entrada + cliente.tempo * 60 * 1000 - agora;
+            const resto = cliente.entrada + cliente.tempo - agora;
 
             if (resto < LIMITE_AVISO) {
                 const telefone = '55' + cliente.telefone.replace(/\D/g, '');
@@ -347,7 +347,7 @@ async function verificarAvisos() {
 
 setInterval(verificarAvisos, 30 * 1000);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
