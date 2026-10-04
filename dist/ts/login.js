@@ -17,7 +17,7 @@ entra.addEventListener("click", async () => {
     }
     entra.disabled = true;
     try {
-        const respostaLogin = await fetch("http://localhost:3000/login", {
+        const respostaLogin = await fetch("/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

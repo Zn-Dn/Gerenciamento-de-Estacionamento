@@ -40,7 +40,7 @@ async function criarcardsposicao() {
     const posicaoVagas = document.querySelector(".posicao-carros");
     if (!posicaoVagas)
         return;
-    const Vagasresposta = await fetch("http://localhost:3000/vagas/ocupadas");
+    const Vagasresposta = await fetch("/vagas/ocupadas");
     const verificar = await Vagasresposta.json();
     const ocupadas = new Set(verificar.ocupadas.map((valor) => valor.numero));
     elementoVagasOcupadas.textContent = String(ocupadas.size);
@@ -76,7 +76,7 @@ async function mostraInfor(numero) {
     if (!numero)
         return;
     try {
-        const dadosdoback = await fetch(`http://localhost:3000/dadosCliente/${numero}`);
+        const dadosdoback = await fetch(`/dadosCliente/${numero}`);
         if (!dadosdoback.ok) {
             console.log("Erro HTTP:", dadosdoback.status);
             return;
@@ -177,7 +177,7 @@ async function Formata() {
 }
 Formata();
 async function avisarCliente(numero) {
-    const resposta = await fetch(`http://localhost:3000/avisar/${numero}`, {
+    const resposta = await fetch(`/avisar/${numero}`, {
         method: "POST"
     });
     const dados = await resposta.json();

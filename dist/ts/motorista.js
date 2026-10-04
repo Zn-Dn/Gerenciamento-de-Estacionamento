@@ -27,7 +27,7 @@ async function enviarReqDeBusca() {
         return;
     }
     try {
-        const respostaDoBack = await fetch(`http://localhost:3000/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`);
+        const respostaDoBack = await fetch(`/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`);
         if (!respostaDoBack.ok) {
             if (Nome)
                 Nome.textContent = "";
