@@ -46,7 +46,7 @@ entra.addEventListener("click", async () => {
             return;
         }
 
-        window.location.href = "/src/pages/dashboard.html";
+        window.location.href = "public/dashboard.html";
     } catch (erro) {
         console.log("Erro ao se conectar ao servidor", erro);
         alert("Não foi possível conectar ao servidor.");
