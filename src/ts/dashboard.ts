@@ -13,12 +13,12 @@ const buttonCadastra = document.querySelector<HTMLButtonElement>(".cadastra")
 // console.log("foi")
 buttonCadastra?.addEventListener("click",()=>{
   
-    window.location.href = "/src/pages/cadastro.html";
+    window.location.href = "/cadastro.html";
 })
 
 buscar?.addEventListener("click",()=>{
   
-    window.location.href = "/src/pages/motorista.html";
+    window.location.href = "/motorista.html";
 })
 
 
