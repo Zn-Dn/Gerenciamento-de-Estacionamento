@@ -39,7 +39,7 @@ entra.addEventListener("click", async () => {
             alert(resultado.erro ?? "Email ou senha incorretos.");
             return;
         }
-        window.location.href = "/src/pages/dashboard.html";
+        window.location.href = "/dashboard.html";
     }
     catch (erro) {
         console.log("Erro ao se conectar ao servidor", erro);

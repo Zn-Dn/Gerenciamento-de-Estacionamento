@@ -6,10 +6,10 @@ const buttonCadastra = document.querySelector(".cadastra");
 const buscar = document.querySelector("#buscar");
 // console.log("foi")
 buttonCadastra?.addEventListener("click", () => {
-    window.location.href = "/src/pages/cadastro.html";
+    window.location.href = "/cadastro.html";
 });
 buscar?.addEventListener("click", () => {
-    window.location.href = "/src/pages/motorista.html";
+    window.location.href = "/motorista.html";
 });
 let mostra = document.createElement("button");
 mostra.innerHTML = `<i class="fa-solid fa-arrows-to-dot"></i>`;

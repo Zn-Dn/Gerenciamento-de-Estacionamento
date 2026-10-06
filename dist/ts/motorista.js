@@ -8,7 +8,7 @@ const entrada = document.querySelector("#entrada");
 const sainda = document.querySelector("#sainda");
 const buttonBuscar = document.querySelector("#busca");
 const contador = document.querySelector("#contador");
-console.log("teste");
+const informacoes = document.querySelector("#informacoes");
 let intervalo;
 function formatarTempo(tempoEmMs) {
     const h = Math.floor(tempoEmMs / 3600000);
@@ -18,6 +18,13 @@ function formatarTempo(tempoEmMs) {
     if (m === 0)
         return `${h}h`;
     return `${h}h ${m}min`;
+}
+function formatarTelefone(telefone) {
+    if (telefone.length < 11) {
+        return ("valor nao correspode");
+    }
+    const numeros = telefone.replace(/\D/g, "");
+    return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
 }
 async function enviarReqDeBusca() {
     clearInterval(intervalo);
@@ -49,7 +56,7 @@ async function enviarReqDeBusca() {
             else {
                 console.log("Erro no servidor:", respostaDoBack.status);
             }
-            return;
+            return null;
         }
         const dados = await respostaDoBack.json();
         const horaEntrada = new Date(dados.entrada);
@@ -59,10 +66,12 @@ async function enviarReqDeBusca() {
             hour: "2-digit",
             minute: "2-digit"
         };
+        // estrutura de visualizacao
+        let telefone = formatarTelefone(dados.telefone);
         if (Nome)
             Nome.textContent = dados.nome;
         if (Telefone)
-            Telefone.textContent = dados.telefone;
+            Telefone.textContent = telefone;
         if (Placa)
             Placa.textContent = dados.placa;
         if (Tempo)
@@ -71,7 +80,6 @@ async function enviarReqDeBusca() {
             entrada.textContent =
                 horaEntrada.toLocaleTimeString("pt-BR", formato);
         }
-        // sainda esta errando ela deve ser somada com o tempo 
         if (sainda) {
             sainda.textContent =
                 horaSaida.toLocaleTimeString("pt-BR", formato);
@@ -94,14 +102,61 @@ async function enviarReqDeBusca() {
         }
         atualizarContador();
         intervalo = window.setInterval(atualizarContador, 1000);
+        return dados;
     }
     catch (erro) {
         console.error("Erro ao buscar motorista:", erro);
         if (contador) {
             contador.textContent = "Erro na busca";
         }
+        return null;
     }
 }
-buttonBuscar?.addEventListener("click", () => {
-    enviarReqDeBusca();
+let motoristaAtual = null;
+const buttonDelete = document.createElement("button");
+buttonDelete.textContent = "Deleta";
+buttonDelete.addEventListener("click", deletaMotorista);
+function criaDelete(nome) {
+    informacoes?.appendChild(buttonDelete);
+    motoristaAtual = nome;
+}
+function limpar() {
+    clearInterval(intervalo);
+    [Nome, contador, Telefone, entrada, sainda, Tempo, Placa].forEach((el) => {
+        if (el)
+            el.textContent = "";
+    });
+    motoristaAtual = null;
+    buttonDelete.remove();
+}
+async function deletaMotorista() {
+    const nome = motoristaAtual;
+    if (!nome) {
+        return;
+    }
+    buttonDelete.disabled = true;
+    try {
+        const resposta = await fetch(`/deletamotorista/${encodeURIComponent(nome)}`, { method: "DELETE" });
+        const resultado = await resposta.json();
+        if (!resposta.ok) {
+            console.log("erro ao comunca com o servidor ");
+            return;
+        }
+        limpar();
+    }
+    catch (erro) {
+        console.log(erro, "erro ao deleta usuario");
+    }
+    finally {
+        buttonDelete.disabled = false;
+    }
+}
+buttonBuscar?.addEventListener("click", async () => {
+    const dados = await enviarReqDeBusca();
+    if (dados?.nome) {
+        criaDelete(dados.nome);
+    }
+    else {
+        limpar();
+    }
 });

@@ -6,6 +6,7 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken'
 import path from "path";
 import { fileURLToPath } from "url";
+import { sign } from 'crypto';
 
 
 const app = express();
@@ -55,6 +56,19 @@ db.exec(`
    )
 `);
 
+function buscarUsuario(email){
+
+
+   if (!email) {
+        return null;
+    }
+
+    const usuario =  db.prepare('SELECT id, email, senha FROM login WHERE email = ?').get(email);
+
+
+return usuario
+}
+
 async function criarUsuario() {
 
 
@@ -86,8 +100,8 @@ async function criarUsuario() {
 await criarUsuario();
 
 
-
-
+// hash falso para manter o tempo de resposta igual quando o usuário não existe
+const HASH_FALSO = bcrypt.hashSync('senha-falsa', 10);
 
 app.post('/login', async (req, res) => {
     try {
@@ -97,21 +111,24 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
         }
 
-        const buscar = db.prepare('SELECT * FROM login WHERE email = ?');
-        const usuario = buscar.get(email);
+        const usuario = buscarUsuario(email);
 
-        if (!usuario) {
+        const senhaCorreta = await bcrypt.compare(
+            senha,
+            usuario ? usuario.senha : HASH_FALSO
+        );
+
+        if (!usuario || !senhaCorreta) {
             return res.status(401).json({ erro: 'Email ou senha inválidos' });
         }
 
-        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+        const token = jwt.sign(
+            { id: usuario.id, email: usuario.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '8h' }
+        );
 
-        if (!senhaCorreta) {
-            return res.status(401).json({ erro: 'Email ou senha inválidos' });
-        }
-        const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.JWT_SECRET, { expiresIn: '8h' });
         res.json({ mensagem: 'Login realizado com sucesso', status: true, token });
-
 
     } catch (erro) {
         console.log('ERRO REAL no login:', erro.message);
@@ -120,11 +137,34 @@ app.post('/login', async (req, res) => {
 });
 
 
+function verificarToken(req, res, next) {
+    const auth = req.headers.authorization;
+
+    if (!auth) {
+        return res.status(401).json({ mensagem: 'Token não fornecido' });
+    }
+
+    const [tipo, token] = auth.split(' ');
+
+    if (tipo !== 'Bearer' || !token) {
+        return res.status(401).json({ mensagem: 'Formato de token inválido' });
+    }
+
+    try {
+        req.usuario = jwt.verify(token, process.env.JWT_SECRET);
+        next();
+    } catch {
+        return res.status(401).json({ mensagem: 'Token inválido ou expirado' });
+    }
+}
+
 
 const TOTAL_VAGAS = 60;
 
 const cadastraComVaga = db.transaction((dados) => {
     const { nome, cpf, telefone, tempo, placa, modelo, cor } = dados;
+
+
 
     const resultado = db.prepare(`
         INSERT INTO CadastroCliente(nome,cpf,telefone,tempo,placa,modelo,cor,entrada)
@@ -233,6 +273,33 @@ app.get('/encontraMotorista', (req, res) => {
     }
 });
 
+
+const removeMotorista = db.transaction((nome) => {
+    db.prepare(`
+        DELETE FROM vagas_ocupadas
+        WHERE cliente_id IN (SELECT id FROM CadastroCliente WHERE nome = ?)
+    `).run(nome);
+
+    return db.prepare('DELETE FROM CadastroCliente WHERE nome = ?').run(nome);
+});
+
+app.delete("/deletamotorista/:nomedomotorista", (req, res) => {
+    try {
+        const nome = req.params.nomedomotorista.trim();
+
+        const resultado = removeMotorista(nome);
+
+        if (resultado.changes === 0) {
+            return res.status(404).json({ erro: "Motorista não encontrado" });
+        }
+
+        res.json({ status: true, mensagem: "Motorista removido" });
+
+    } catch (erro) {
+        console.log("ERRO REAL ao deletar:", erro.message);
+        res.status(500).json({ erro: "Erro ao deletar motorista" });
+    }
+});
 
 
 

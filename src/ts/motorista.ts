@@ -11,7 +11,7 @@ const sainda = document.querySelector<HTMLElement>("#sainda");
 const buttonBuscar = document.querySelector<HTMLButtonElement>("#busca");
 const contador = document.querySelector<HTMLElement>("#contador");
 
-console.log("teste");
+const informacoes = document.querySelector<HTMLSelectElement>("#informacoes")
 
 let intervalo: number | undefined;
 
@@ -25,6 +25,21 @@ function formatarTempo(tempoEmMs: number): string {
 
     return `${h}h ${m}min`;
 }
+
+function formatarTelefone(telefone: string): string {
+
+    if(telefone.length < 11){
+    return ("valor nao correspode")
+    }
+    
+    const numeros = telefone.replace(/\D/g, "");
+
+    return numeros.replace(
+        /(\d{2})(\d{5})(\d{4})/,
+        "($1) $2-$3"
+    );
+}
+
 async function enviarReqDeBusca() {
 
     clearInterval(intervalo);
@@ -58,7 +73,7 @@ async function enviarReqDeBusca() {
                 console.log("Erro no servidor:", respostaDoBack.status);
             }
 
-            return;
+          return null
         }
 
         const dados = await respostaDoBack.json();
@@ -75,8 +90,12 @@ async function enviarReqDeBusca() {
             minute: "2-digit"
         };
 
+        // estrutura de visualizacao
+let telefone = formatarTelefone(dados.telefone);
+
+
         if (Nome) Nome.textContent = dados.nome;
-        if (Telefone) Telefone.textContent = dados.telefone;
+        if (Telefone) Telefone.textContent = telefone;
         if (Placa) Placa.textContent = dados.placa;
         if (Tempo) Tempo.textContent = formatarTempo(dados.tempo);
 
@@ -85,7 +104,7 @@ async function enviarReqDeBusca() {
                 horaEntrada.toLocaleTimeString("pt-BR", formato);
         }
 
-        // sainda esta errando ela deve ser somada com o tempo 
+       
         if (sainda) {
             sainda.textContent =
                 horaSaida.toLocaleTimeString("pt-BR", formato);
@@ -117,12 +136,15 @@ async function enviarReqDeBusca() {
             }
         }
 
+
         atualizarContador();
 
         intervalo = window.setInterval(
             atualizarContador,
             1000
         );
+
+        return dados;
 
     } catch (erro) {
 
@@ -131,9 +153,79 @@ async function enviarReqDeBusca() {
         if (contador) {
             contador.textContent = "Erro na busca";
         }
+          return null;
     }
 }
 
-buttonBuscar?.addEventListener("click", () => {
-    enviarReqDeBusca();
+
+
+
+
+
+
+
+let motoristaAtual:string | null = null
+
+const buttonDelete = document.createElement("button")
+buttonDelete.textContent = "Deleta"
+buttonDelete.addEventListener("click",deletaMotorista)
+
+function criaDelete(nome:string){
+    informacoes?.appendChild(buttonDelete)
+motoristaAtual = nome
+
+}
+
+
+function limpar(){
+    clearInterval(intervalo);
+    [Nome,contador,Telefone,entrada,sainda,Tempo,Placa].forEach((el)=>{
+        if(el) el.textContent = ""
+       
+    })
+    motoristaAtual = null
+       buttonDelete.remove()
+}
+
+async  function deletaMotorista(){
+const nome =  motoristaAtual
+ if(!nome){
+    return;
+ }
+buttonDelete.disabled = true; 
+try{
+const resposta = await fetch(`/deletamotorista/${encodeURIComponent(nome)}`,
+    {method:"DELETE"}
+);
+ 
+
+const resultado = await resposta.json();
+if(!resposta.ok){
+    console.log("erro ao comunca com o servidor ")
+    return;
+}
+limpar()
+
+}
+catch(erro){
+console.log(erro,"erro ao deleta usuario");
+}
+
+finally{
+    buttonDelete.disabled = false;
+}
+
+}
+
+buttonBuscar?.addEventListener("click", async () => {
+  const dados = await enviarReqDeBusca();
+
+
+  if (dados?.nome) {
+    criaDelete(dados.nome);
+  }
+
+  else{
+    limpar()
+  }
 });
