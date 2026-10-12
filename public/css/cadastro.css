@@ -109,3 +109,18 @@ main {
 #escolharTempo select{
     width: 70px;
 }
+.card-sucesso{
+    background-color: white;
+    padding: 20px;
+    position: absolute;
+    bottom: 100px;
+    left: 10px;
+}
+#butoes{
+    display: flex;
+    gap: 10px;
+  
+}
+#button-right,#button-left{
+    font-size: 1rem;
+}

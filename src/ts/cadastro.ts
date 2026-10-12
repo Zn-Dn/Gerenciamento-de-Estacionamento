@@ -1,20 +1,12 @@
 
 let nomeInput = document.querySelector<HTMLInputElement>("#nome")!
-
 let cpfInput = document.querySelector<HTMLInputElement>("#cpf")!
-
 let telefoneInput = document.querySelector<HTMLInputElement>("#telefone")!
-
 let tempoInput = document.querySelector<HTMLInputElement>("#tempo")!
-
 let select = document.querySelector<HTMLSelectElement>("#escolharTempo select")!
-
 let placa = document.querySelector<HTMLInputElement>("#placa")!
-
 let modelo = document.querySelector<HTMLInputElement>("#modelo")!
-
 let cor = document.querySelector<HTMLInputElement>("#cor")!
-
 let button = document.querySelector<HTMLButtonElement>("#buttoncadastro")!
 
 const elementos = {
@@ -96,6 +88,7 @@ button?.addEventListener("click", async () => {
         })
 
         respostadoCadastro = await cadastro.json()
+      
 
         if (!cadastro.ok) {
 
@@ -106,6 +99,7 @@ button?.addEventListener("click", async () => {
         }
 
         console.log(respostadoCadastro)
+        mostrarSucesso()
 
     }
 
@@ -122,8 +116,34 @@ button?.addEventListener("click", async () => {
     finally {
 
         button.disabled = false
-
+ nomeInput.value = ""
+    cpfInput.value = ""
+    telefoneInput.value = ""
+    tempoInput.value = ""
+    placa.value = ""
+    modelo.value = ""
+    cor.value = ""
+   
     }
 
 })
 
+function mostrarSucesso() {
+    const card = document.createElement("div");
+    card.classList.add("card-sucesso");
+    card.textContent = "✅ Cadastro realizado com sucesso!";
+document.body.appendChild(card); 
+    setTimeout(()=>{
+    card.remove()
+    },2000)
+    
+     
+}
+
+let voltaparadashboard = document.querySelector("#button-left")?.addEventListener("click",()=>{
+   window.location.href = "/dashboard.html"; 
+})
+
+let irparabuscar = document.querySelector("#button-right")?.addEventListener("click",()=>{
+   window.location.href = "/motorista.html"; 
+})

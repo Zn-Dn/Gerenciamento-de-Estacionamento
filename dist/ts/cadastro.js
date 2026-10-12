@@ -58,6 +58,7 @@ button?.addEventListener("click", async () => {
             return;
         }
         console.log(respostadoCadastro);
+        mostrarSucesso();
     }
     catch (erro) {
         console.log("Erro ao se conectar ao servidor", erro);
@@ -66,5 +67,27 @@ button?.addEventListener("click", async () => {
     }
     finally {
         button.disabled = false;
+        nomeInput.value = "";
+        cpfInput.value = "";
+        telefoneInput.value = "";
+        tempoInput.value = "";
+        placa.value = "";
+        modelo.value = "";
+        cor.value = "";
     }
+});
+function mostrarSucesso() {
+    const card = document.createElement("div");
+    card.classList.add("card-sucesso");
+    card.textContent = "✅ Cadastro realizado com sucesso!";
+    document.body.appendChild(card);
+    setTimeout(() => {
+        card.remove();
+    }, 2000);
+}
+let voltaparadashboard = document.querySelector("#button-left")?.addEventListener("click", () => {
+    window.location.href = "/dashboard.html";
+});
+let irparabuscar = document.querySelector("#button-right")?.addEventListener("click", () => {
+    window.location.href = "/motorista.html";
 });

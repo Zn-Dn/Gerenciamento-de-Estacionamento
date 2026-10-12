@@ -126,6 +126,9 @@ function limpar() {
         if (el)
             el.textContent = "";
     });
+    if (InputPesquisa) {
+        InputPesquisa.value = "";
+    }
     motoristaAtual = null;
     buttonDelete.remove();
 }
@@ -159,4 +162,7 @@ buttonBuscar?.addEventListener("click", async () => {
     else {
         limpar();
     }
+});
+let voltaparacadastro = document.querySelector("#button-left")?.addEventListener("click", () => {
+    window.location.href = "/cadastro.html";
 });

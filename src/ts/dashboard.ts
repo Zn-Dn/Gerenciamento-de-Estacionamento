@@ -10,16 +10,7 @@ const buttonCadastra = document.querySelector<HTMLButtonElement>(".cadastra")
  const buscar = document.querySelector<HTMLButtonElement>("#buscar")
 
 
-// console.log("foi")
-buttonCadastra?.addEventListener("click",()=>{
-  
-    window.location.href = "/cadastro.html";
-})
 
-buscar?.addEventListener("click",()=>{
-  
-    window.location.href = "/motorista.html";
-})
 
 
 
@@ -311,5 +302,17 @@ async function avisarCliente(numero: number) {
         return;
     }
 
-    window.open(dados.link, "_blank");   // abre o WhatsApp com a mensagem pronta
+    window.open(dados.link, "_blank");   
+
 }
+
+
+buttonCadastra?.addEventListener("click",()=>{
+  
+    window.location.href = "/cadastro.html";
+})
+
+buscar?.addEventListener("click",()=>{
+  
+    window.location.href = "/motorista.html";
+})

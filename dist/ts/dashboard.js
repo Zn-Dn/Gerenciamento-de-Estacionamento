@@ -4,13 +4,6 @@ let elementoVagasOcupadas = document.querySelector(".vagas-ocupadas strong");
 let elementoVagasTotais = document.querySelector(".vagas-totais strong");
 const buttonCadastra = document.querySelector(".cadastra");
 const buscar = document.querySelector("#buscar");
-// console.log("foi")
-buttonCadastra?.addEventListener("click", () => {
-    window.location.href = "/cadastro.html";
-});
-buscar?.addEventListener("click", () => {
-    window.location.href = "/motorista.html";
-});
 let mostra = document.createElement("button");
 mostra.innerHTML = `<i class="fa-solid fa-arrows-to-dot"></i>`;
 mostra.classList.add("mostra");
@@ -185,5 +178,11 @@ async function avisarCliente(numero) {
         alert(dados.erro);
         return;
     }
-    window.open(dados.link, "_blank"); // abre o WhatsApp com a mensagem pronta
+    window.open(dados.link, "_blank");
 }
+buttonCadastra?.addEventListener("click", () => {
+    window.location.href = "/cadastro.html";
+});
+buscar?.addEventListener("click", () => {
+    window.location.href = "/motorista.html";
+});
