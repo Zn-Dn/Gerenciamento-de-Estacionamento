@@ -115,6 +115,7 @@ main {
     position: absolute;
     bottom: 100px;
     left: 10px;
+    border-radius: 10px;
 }
 #butoes{
     display: flex;

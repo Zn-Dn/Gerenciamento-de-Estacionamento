@@ -23,7 +23,9 @@ main {
   
 }
 .card-cliente {
-    background-color: #1E3A8A;
+    background-color: transparent;
+   backdrop-filter: blur(10px);
+   border: 2px solid white;
     width: 300px;
     min-height: 300px;   
     border-radius: 10px;
@@ -48,11 +50,11 @@ main {
     align-self: start;
     z-index: 1;
   background-color: transparent;
-    width: 30px;
+    font-size: 1.2rem;
     padding: 10px;
     color: red;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     transition: .7s;
 }
 
@@ -67,13 +69,18 @@ main {
     color: white;
     font-size: 2rem;
     margin-bottom: 10px;
+      border-bottom: 3px solid #ffff;
+ 
 }
 
 
 .card-cliente .formulario p {
     color: white;
-    border-bottom: 2px solid black;
     margin: 0;
+    background-color: var(--cor-cinza-escuro);
+    border:2px solid black;
+    padding: 10px;
+    border-radius: 10px;
 }
 .mostra {
     position: absolute;

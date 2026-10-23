@@ -1,3 +1,9 @@
+// Ponto de entrada da página de cadastro.
+
+import "../shared/navegacao.js"
+import { mostrarSucesso } from "../shared/mensagens.js"
+import { ParaMinutos } from "./validacao.js"
+import { enviarCadastro } from "./api.js"
 
 let nomeInput = document.querySelector<HTMLInputElement>("#nome")!
 let cpfInput = document.querySelector<HTMLInputElement>("#cpf")!
@@ -31,12 +37,6 @@ for (const [nome, el] of Object.entries(elementos)) {
 
 }
 
-function ParaMinutos(numero: number, uni: string): number {
-
-    return uni === "horas" ? numero * 3600000 : numero * 60000
-
-}
-
 button?.addEventListener("click", async () => {
 
     const numero = Number(tempoInput.value)
@@ -57,33 +57,21 @@ button?.addEventListener("click", async () => {
 
     try {
 
-        let cadastro = await fetch("/Cadastro", {
+        let cadastro = await enviarCadastro({
 
-            method: "POST",
+            nome: nomeInput.value.trim(),
 
-            headers: {
+            cpf: cpfInput.value.trim(),
 
-                "Content-Type": "application/json"
+            telefone: telefoneInput.value.trim(),
 
-            },
+            tempo: TempoEmMilisegundos,
 
-            body: JSON.stringify({
+            placa: placa.value.trim(),
 
-                nome: nomeInput.value.trim(),
+            modelo: modelo.value.trim(),
 
-                cpf: cpfInput.value.trim(),
-
-                telefone: telefoneInput.value.trim(),
-
-                tempo: TempoEmMilisegundos,
-
-                placa: placa.value.trim(),
-
-                modelo: modelo.value.trim(),
-
-                cor: cor.value.trim()
-
-            })
+            cor: cor.value.trim()
 
         })
 
@@ -126,24 +114,4 @@ button?.addEventListener("click", async () => {
    
     }
 
-})
-
-function mostrarSucesso() {
-    const card = document.createElement("div");
-    card.classList.add("card-sucesso");
-    card.textContent = "✅ Cadastro realizado com sucesso!";
-document.body.appendChild(card); 
-    setTimeout(()=>{
-    card.remove()
-    },2000)
-    
-     
-}
-
-let voltaparadashboard = document.querySelector("#button-left")?.addEventListener("click",()=>{
-   window.location.href = "/dashboard.html"; 
-})
-
-let irparabuscar = document.querySelector("#button-right")?.addEventListener("click",()=>{
-   window.location.href = "/motorista.html"; 
 })
