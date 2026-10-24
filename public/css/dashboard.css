@@ -1,11 +1,18 @@
 @import url(global.css);
 
+:root {
+    --cor-concreto: #E9ECEF;
+    --cor-vaga: #3E4C59;
+    --cor-livre: #2E7D4F;
+    --cor-ocupada: #C0392B;
+}
+
 .cardCarro.vencida{
-    background-color: red;
+    background-color: var(--cor-ocupada);
 }
 @keyframes piscar {
-    from { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    to   { box-shadow: 0 0 12px 4px rgba(239, 68, 68, 1); }
+    from { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); }
+    to   { box-shadow: 0 0 12px 4px rgba(192, 57, 43, 1); }
 }
 
 .cardCarro.piscando {
@@ -19,14 +26,15 @@ main {
     width: 100%;
     display: flex;
     flex-direction: column;
-    background-color:#EFF6FF ;
-  
+    background-color: var(--cor-concreto);
 }
+
 .card-cliente {
-    background-color: #1E3A8A;
+    background-color: var(--cor-asfalto);
     width: 300px;
-    min-height: 300px;   
-    border-radius: 10px;
+    min-height: 300px;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -6px 6px 20px rgba(0, 0, 0, 0.35);
     padding: 10px;
     position: absolute;
     right: 0;
@@ -35,11 +43,10 @@ main {
 
 .card-cliente .formulario {
     display: grid;
-    grid-template-columns: 1fr 1fr;   
+    grid-template-columns: 1fr 1fr;
     gap: 16px 16px;
     padding: 10px;
 }
-
 
 .card-cliente .fechar {
     grid-column: 1;
@@ -47,59 +54,68 @@ main {
     justify-self: start;
     align-self: start;
     z-index: 1;
-  background-color: transparent;
-    width: 30px;
-    padding: 10px;
-    color: red;
+    background-color: transparent;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    color: var(--cor-erro);
     border: none;
-    border-radius: 10px;
-    transition: .7s;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.fechar:hover{
-    background-color: red;
-    color: white;
+.card-cliente .fechar:hover{
+    background-color: var(--cor-erro);
+    color: var(--cor-branco);
 }
+
 .card-cliente .titulo {
     grid-column: 1 / -1;
     grid-row: 1;
     text-align: center;
-    color: white;
-    font-size: 2rem;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    color: var(--cor-branco);
+    font-size: 1.4rem;
+    font-weight: 600;
     margin-bottom: 10px;
 }
 
-
 .card-cliente .formulario p {
-    color: white;
-    border-bottom: 2px solid black;
+    color: var(--cor-branco);
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 0.25rem;
     margin: 0;
 }
+
 .mostra {
     position: absolute;
     right: 20px;
     bottom: 20px;
     border: none;
     background-color: transparent;
+    color: var(--cor-asfalto);
     display: none;
     font-size: 1.5rem;
-    
+    cursor: pointer;
 }
 
 .opcoes,.mostra{
- transition: .3s ease-in-out;   
+    transition: .3s ease-in-out;
 }
 
 .cards {
     display: flex;
     justify-content: center;
     gap: 20px;
-    background-color:#1E3A8A ;
-    padding: 20px;
+    background-color: var(--cor-asfalto);
+    box-shadow: inset 0 -4px 0 var(--cor-faixa);
+    padding: 20px 20px 24px;
     height: auto;
     transition: .5s;
 }
-
 
 .cards.escondido {
     height: 0;
@@ -109,31 +125,43 @@ main {
 }
 
 article {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
     background-color: var(--cor-branco);
-    border-radius: 10px;
-    width: auto;
-    height: 100px;
-    padding: 0 10px;
+    border-radius: 8px;
+    min-width: 10rem;
+    min-height: 6.5rem;
+    padding: 0.75rem 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 0.25rem;
 }
 
-p {
-    font-size: 1.3rem;
-    font-weight: 700;
+article p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cor-cinza-escuro);
 }
 
-strong {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--cor-preto);
+article strong {
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--cor-asfalto);
+}
+
+article:nth-child(1) strong {
+    color: var(--cor-livre);
+}
+
+article:nth-child(2) strong {
+    color: var(--cor-ocupada);
 }
 
 .posicaocontainer {
-    overflow-y: hidden;
+    overflow-y: auto;
     width: 100%;
     height: 100%;
     flex: 1;
@@ -145,42 +173,51 @@ strong {
 .posicao-carros {
     display: grid;
     align-items: center;
+    align-content: center;
     justify-content: space-around;
     grid-template-columns: repeat(10, auto);
     height: 100%;
     width: 100%;
-    gap: 10px;
+    padding: 1.5rem;
+    gap: 1rem;
     transition: 1s;
 }
 
 .cardCarro {
-     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-    background-color: var(--cor-cinza-escuro);
-    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: var(--cor-vaga);
+    border-radius: 6px;
     color: var(--cor-branco);
-    width: 50px;
-    height: 50px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    outline: 3px solid transparent;
+    outline-offset: 2px;
+    transition: transform 0.3s, outline-color 0.3s;
 }
 
 .cardCarro:hover{
-    transition: .5s;
-transform: scale(1.1);
+    transform: scale(1.1);
+    outline-color: var(--cor-faixa);
 }
-
-
 
 .opcoes {
     height: auto;
-    background-color:#1E3A8A ;
-    padding: 20px;
+    background-color: var(--cor-asfalto);
+    box-shadow: inset 0 4px 0 var(--cor-faixa);
+    padding: 24px 20px 20px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    align-items: center;
+    gap: 1rem;
     transform: translateY(0px);
-   
 }
 
 .opcoes.escondido {
@@ -189,40 +226,99 @@ transform: scale(1.1);
     overflow: hidden;
     transform: translateY(200px);
 }
+
 .cadastra,
 .focus,
 .sair {
     border: none;
     background-color: transparent;
     font-size: 1rem;
+    cursor: pointer;
 }
 
 .focus,
 .sair {
-    color: #fff;
-    transition: transform 0.3s ease;
+    color: var(--cor-branco);
+    padding: 0.5rem;
+    transition: transform 0.3s ease, color 0.3s ease;
     transform: rotate(180deg);
 }
 
 .focus:hover,
 .sair:hover {
+    color: var(--cor-faixa);
     transform: rotate(180deg) scale(1.1);
 }
-.cadastra,#buscar {
+
+.cadastra,
+#buscar {
+    height: 2.75rem;
+    padding: 0 1.25rem;
     font-size: 1rem;
     font-weight: 600;
-    background-color: rgba(6, 203, 52, 0.558);
-    padding: 10px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.cadastra {
+    background-color: var(--cor-faixa);
+    color: var(--cor-asfalto);
+    border-color: var(--cor-faixa);
+}
+
+.cadastra:hover {
+    background-color: var(--cor-faixa-hover);
+    border-color: var(--cor-faixa-hover);
+}
+
+#buscar {
+    background-color: transparent;
     color: var(--cor-branco);
-    border-radius: 10px;
-    border: none;
-    transition: 1s;
+    border-color: var(--cor-branco);
 }
 
-#buscar:hover,.cadastra:hover {
-     background-color: rgba(6, 203, 52, 0.755);
+#buscar:hover {
+    background-color: var(--cor-branco);
+    color: var(--cor-asfalto);
 }
 
+.opcoes button:focus-visible,
+.mostra:focus-visible,
+.fechar:focus-visible {
+    outline: 3px solid var(--cor-faixa);
+    outline-offset: 2px;
+}
 
+@media (max-width: 720px) {
+    .cards {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 16px 20px;
+    }
 
+    article {
+        min-width: 0;
+        flex: 1 1 8rem;
+    }
 
+    .posicao-carros {
+        grid-template-columns: repeat(5, auto);
+    }
+
+    .card-cliente {
+        width: 90%;
+    }
+
+    .opcoes {
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cardCarro.piscando {
+        animation: none;
+        outline-color: var(--cor-faixa);
+    }
+}

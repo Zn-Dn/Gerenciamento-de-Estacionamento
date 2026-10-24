@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@700&family=Barlow+Semi+Condensed:wght@600&display=swap');
 
 *{
     margin: 0;
@@ -8,9 +9,15 @@
 body{
     height: 100vh;
     width: 100%;
+    font-family: 'Barlow', sans-serif;
 }
 
-
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
+}
 
 :root {
 
@@ -42,4 +49,10 @@ body{
     /* sombras */
     --sombra-card: rgba(0, 0, 0, 0.05);
     --sombra-forte: rgba(0, 0, 0, 0.10);
+
+    /* garagem */
+    --cor-asfalto: #1F2933;
+    --cor-faixa: #F2B705;
+    --cor-faixa-hover: #D9A304;
+    --cor-placa: #1D4E89;
 }

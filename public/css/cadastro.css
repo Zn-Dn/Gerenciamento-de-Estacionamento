@@ -1,34 +1,35 @@
-@import url(/src/css/global.css);
+@import url(global.css);
 
 body{
     overflow-y: hidden;
+    background:
+        repeating-linear-gradient(90deg, transparent 0 118px, rgba(242, 183, 5, 0.18) 118px 120px),
+        var(--cor-asfalto);
 }
 
 main {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--cor-cinza-escuro);
+    padding: 1rem;
 }
 
 .motorista-carro {
     background-color: var(--cor-branco);
     border-radius: 8px;
-   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     padding: 2rem;
     width: 100%;
-    max-width: 800px;
- position: relative;}
-
-
+    max-width: 860px;
+    position: relative;
+}
 
 .infor {
     display: flex;
     gap: 2rem;
     margin-bottom: 2rem;
-   
 }
 
 .motorista,
@@ -40,14 +41,14 @@ main {
 
 .motorista {
     padding-right: 2rem;
-    border-right: 2px solid var(--cor-cinza-escuro);
-    
+    border-right: 2px solid var(--cor-cinza-claro);
 }
 
 .Titulo {
-    color: var(--cor-preto);
-    font-size: 1.7rem;
-    font-weight: 700;
+    font-family: 'Barlow Semi Condensed', sans-serif;
+    color: var(--cor-asfalto);
+    font-size: 1.4rem;
+    font-weight: 600;
     margin-bottom: 1.2rem;
 }
 
@@ -62,43 +63,97 @@ main {
 .carro label {
     display: flex;
     flex-direction: column;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--cor-cinza-escuro);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cor-grafite);
     gap: 0.4rem;
 }
 
 .motorista input,
 .carro input {
-    padding: 0.6rem 0.8rem;
-    border: 1px solid var(--cor-cinza-escuro);
-    border-radius: 4px;
+    height: 2.75rem;
+    padding: 0 0.8rem;
+    border: 1px solid var(--cor-cinza);
+    border-radius: 6px;
     font-size: 1rem;
     color: var(--cor-preto);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .motorista input:focus,
 .carro input:focus {
-    border-color: var(--cor-cinza);
+    border-color: var(--cor-placa);
+    box-shadow: 0 0 0 3px rgba(29, 78, 137, 0.2);
 }
 
-.motorista-carro  button {
+.motorista select,
+.carro select {
+    height: 2.75rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--cor-cinza);
+    border-radius: 6px;
+    font-size: 1rem;
+    color: var(--cor-preto);
+    background-color: var(--cor-branco);
+}
+
+.carro label:first-of-type input {
+    height: 3.25rem;
+    border: 2px solid var(--cor-grafite);
+    border-top: 0.9rem solid var(--cor-placa);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.motorista-carro button {
     display: block;
     width: 100%;
-    padding: 0.8rem;
-      background-color: rgba(6, 203, 52, 0.755);
-    color: var(--cor-branco);
-    border: none;
-    border-radius: 4px;
+    height: 3rem;
+    padding: 0 1rem;
+    background-color: transparent;
+    color: var(--cor-cinza-escuro);
+    border: 2px solid var(--cor-cinza-claro);
+    border-radius: 6px;
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
 }
- 
-.motorista-carro > button:hover {
-  background-color: rgba(6, 203, 52, 0.558);
+
+.motorista-carro button:hover {
+    background-color: var(--cor-cinza-claro);
+}
+
+.motorista-carro button:focus-visible {
+    outline: 3px solid var(--cor-placa);
+    outline-offset: 2px;
+}
+
+#butoes button:nth-child(2) {
+    flex: 1.4;
+    background-color: var(--cor-faixa);
+    color: var(--cor-asfalto);
+    border-color: var(--cor-faixa);
+}
+
+#butoes button:nth-child(2):hover {
+    background-color: var(--cor-faixa-hover);
+    border-color: var(--cor-faixa-hover);
+}
+
+#butoes button:nth-child(3) {
+    color: var(--cor-placa);
+    border-color: var(--cor-placa);
+}
+
+#butoes button:nth-child(3):hover {
+    background-color: var(--cor-placa);
+    color: var(--cor-branco);
 }
 
 #escolharTempo{
@@ -107,7 +162,7 @@ main {
     gap: 5px;
 }
 #escolharTempo select{
-    width: 70px;
+    width: 7rem;
 }
 .card-sucesso{
     background-color: #E8F5E9;
@@ -126,4 +181,25 @@ main {
 }
 #button-right,#button-left{
     font-size: 1rem;
+}
+
+@media (max-width: 720px) {
+    body {
+        overflow-y: auto;
+    }
+
+    .infor {
+        flex-direction: column;
+    }
+
+    .motorista {
+        padding-right: 0;
+        padding-bottom: 2rem;
+        border-right: none;
+        border-bottom: 2px solid var(--cor-cinza-claro);
+    }
+
+    #butoes {
+        flex-direction: column;
+    }
 }
