@@ -110,11 +110,14 @@ main {
     width: 70px;
 }
 .card-sucesso{
-    background-color: white;
+    background-color: #E8F5E9;
+    color: #2E7D32;
     padding: 20px;
     position: absolute;
     bottom: 100px;
     left: 10px;
+    border-radius: 10px;
+    border: 2px solid  #81C784;
 }
 #butoes{
     display: flex;
