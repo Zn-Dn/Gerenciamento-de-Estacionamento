@@ -1,13 +1,12 @@
-
-let nomeInput = document.querySelector<HTMLInputElement>("#nome")!
-let cpfInput = document.querySelector<HTMLInputElement>("#cpf")!
-let telefoneInput = document.querySelector<HTMLInputElement>("#telefone")!
-let tempoInput = document.querySelector<HTMLInputElement>("#tempo")!
-let select = document.querySelector<HTMLSelectElement>("#escolharTempo select")!
-let placa = document.querySelector<HTMLInputElement>("#placa")!
-let modelo = document.querySelector<HTMLInputElement>("#modelo")!
-let cor = document.querySelector<HTMLInputElement>("#cor")!
-let button = document.querySelector<HTMLButtonElement>("#buttoncadastro")!
+const nomeInput = document.querySelector<HTMLInputElement>("#nome")!;
+const cpfInput = document.querySelector<HTMLInputElement>("#cpf")!;
+const telefoneInput = document.querySelector<HTMLInputElement>("#telefone")!;
+const tempoInput = document.querySelector<HTMLInputElement>("#tempo")!;
+const select = document.querySelector<HTMLSelectElement>("#escolharTempo select")!;
+const placa = document.querySelector<HTMLInputElement>("#placa")!;
+const modelo = document.querySelector<HTMLInputElement>("#modelo")!;
+const cor = document.querySelector<HTMLInputElement>("#cor")!;
+const button = document.querySelector<HTMLButtonElement>("#buttoncadastro")!;
 
 const elementos = {
     nomeInput,
@@ -18,132 +17,99 @@ const elementos = {
     placa,
     modelo,
     cor,
-    button
-}
+    button,
+};
 
 for (const [nome, el] of Object.entries(elementos)) {
-
     if (!el) {
-
-        throw new Error(`Elemento "${nome}" não encontrado no HTML.`)
-
+        throw new Error(`Elemento "${nome}" não encontrado no HTML.`);
     }
-
 }
 
-function ParaMinutos(numero: number, uni: string): number {
 
-    return uni === "horas" ? numero * 3600000 : numero * 60000
-
+function ParaMilissegundos(numero: number, uni: string): number {
+    return uni === "horas" ? numero * 3600000 : numero * 60000;
 }
 
-button?.addEventListener("click", async () => {
-
-    const numero = Number(tempoInput.value)
+// CORREÇÃO: removido o "?." do button (ele já foi verificado acima e não pode ser null).
+button.addEventListener("click", async () => {
+    const numero = Number(tempoInput.value);
 
     if (!numero || numero <= 0) {
+        alert("Digite um valor valido");
 
-        alert("Digite um valor valido")
-
-        return
-
+        return;
     }
 
-    const TempoEmMilisegundos = ParaMinutos(numero, select.value)
+    const TempoEmMilisegundos = ParaMilissegundos(numero, select.value);
 
-    let respostadoCadastro: { erro?: string }
-
-    button.disabled = true
+    button.disabled = true;
 
     try {
-
-        let cadastro = await fetch("/Cadastro", {
-
+        const cadastro = await fetch("/Cadastro", {
             method: "POST",
 
             headers: {
-
-                "Content-Type": "application/json"
-
+                "Content-Type": "application/json",
             },
 
             body: JSON.stringify({
-
                 nome: nomeInput.value.trim(),
-
                 cpf: cpfInput.value.trim(),
-
                 telefone: telefoneInput.value.trim(),
-
                 tempo: TempoEmMilisegundos,
-
                 placa: placa.value.trim(),
-
                 modelo: modelo.value.trim(),
+                cor: cor.value.trim(),
+            }),
+        });
 
-                cor: cor.value.trim()
-
-            })
-
-        })
-
-        respostadoCadastro = await cadastro.json()
-      
+        const respostadoCadastro: { erro?: string } = await cadastro.json().catch(() => ({}));
 
         if (!cadastro.ok) {
+            // CORREÇÃO: se "erro" não vier no JSON, o alert mostrava "undefined".
+            alert(respostadoCadastro.erro ?? "Não foi possível realizar o cadastro");
 
-            alert(respostadoCadastro.erro)
-
-            return
-
+            return;
         }
 
-        console.log(respostadoCadastro)
-        mostrarSucesso()
+        console.log(respostadoCadastro);
+        mostrarSucesso();
 
+    
+        nomeInput.value = "";
+        cpfInput.value = "";
+        telefoneInput.value = "";
+        tempoInput.value = "";
+        placa.value = "";
+        modelo.value = "";
+        cor.value = "";
+    } catch (erro) {
+        console.log("Erro ao se conectar ao servidor", erro);
+
+        alert("Não foi possível conectar ao servidor");
+
+        return;
+    } finally {
+        button.disabled = false;
     }
-
-    catch (erro) {
-
-        console.log("Erro ao se conectar ao servidor", erro)
-
-        alert("Não foi possível conectar ao servidor")
-
-        return
-
-    }
-
-    finally {
-
-        button.disabled = false
- nomeInput.value = ""
-    cpfInput.value = ""
-    telefoneInput.value = ""
-    tempoInput.value = ""
-    placa.value = ""
-    modelo.value = ""
-    cor.value = ""
-   
-    }
-
-})
+});
 
 function mostrarSucesso() {
     const card = document.createElement("div");
     card.classList.add("card-sucesso");
     card.textContent = "✅ Cadastro realizado com sucesso!";
-document.body.appendChild(card); 
-    setTimeout(()=>{
-    card.remove()
-    },2000)
-    
-     
+    document.body.appendChild(card);
+    setTimeout(() => {
+        card.remove();
+    }, 2000);
 }
 
-let voltaparadashboard = document.querySelector("#button-left")?.addEventListener("click",()=>{
-   window.location.href = "/dashboard.html"; 
-})
 
-let irparabuscar = document.querySelector("#button-right")?.addEventListener("click",()=>{
-   window.location.href = "/motorista.html"; 
-})
+document.querySelector("#button-left")?.addEventListener("click", () => {
+    window.location.href = "/dashboard.html";
+});
+
+document.querySelector("#button-right")?.addEventListener("click", () => {
+    window.location.href = "/motorista.html";
+});

@@ -6,17 +6,17 @@ const Placa = document.querySelector<HTMLElement>("#placa");
 const Tempo = document.querySelector<HTMLElement>("#tempo");
 
 const entrada = document.querySelector<HTMLElement>("#entrada");
+
 const sainda = document.querySelector<HTMLElement>("#sainda");
 
 const buttonBuscar = document.querySelector<HTMLButtonElement>("#busca");
 const contador = document.querySelector<HTMLElement>("#contador");
 
-const informacoes = document.querySelector<HTMLSelectElement>("#informacoes")
+const informacoes = document.querySelector<HTMLElement>("#informacoes");
 
 let intervalo: number | undefined;
 
 function formatarTempo(tempoEmMs: number): string {
-
     const h = Math.floor(tempoEmMs / 3600000);
     const m = Math.floor((tempoEmMs % 3600000) / 60000);
 
@@ -27,21 +27,17 @@ function formatarTempo(tempoEmMs: number): string {
 }
 
 function formatarTelefone(telefone: string): string {
-
-    if(telefone.length < 11){
-    return ("valor nao correspode")
-    }
-    
+   
     const numeros = telefone.replace(/\D/g, "");
 
-    return numeros.replace(
-        /(\d{2})(\d{5})(\d{4})/,
-        "($1) $2-$3"
-    );
+    if (numeros.length < 11) {
+        return "Valor não corresponde"; // CORREÇÃO: texto tinha erros de digitação
+    }
+
+    return numeros.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
 }
 
 async function enviarReqDeBusca() {
-
     clearInterval(intervalo);
 
     const nomeDigitado = InputPesquisa?.value.trim() ?? "";
@@ -52,13 +48,11 @@ async function enviarReqDeBusca() {
     }
 
     try {
-
         const respostaDoBack = await fetch(
             `/encontraMotorista?nomeDoCliente=${encodeURIComponent(nomeDigitado)}`
         );
 
         if (!respostaDoBack.ok) {
-
             if (Nome) Nome.textContent = "";
             if (Telefone) Telefone.textContent = "";
             if (Placa) Placa.textContent = "";
@@ -73,26 +67,24 @@ async function enviarReqDeBusca() {
                 console.log("Erro no servidor:", respostaDoBack.status);
             }
 
-          return null
+            return null;
         }
 
         const dados = await respostaDoBack.json();
 
         const horaEntrada = new Date(dados.entrada);
 
-        const saidaEmMs =
-            dados.entrada + dados.tempo
+        const saidaEmMs = dados.entrada + dados.tempo;
 
         const horaSaida = new Date(saidaEmMs);
 
         const formato: Intl.DateTimeFormatOptions = {
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
         };
 
-        // estrutura de visualizacao
-let telefone = formatarTelefone(dados.telefone);
-
+       
+        const telefone = formatarTelefone(String(dados.telefone));
 
         if (Nome) Nome.textContent = dados.nome;
         if (Telefone) Telefone.textContent = telefone;
@@ -100,22 +92,17 @@ let telefone = formatarTelefone(dados.telefone);
         if (Tempo) Tempo.textContent = formatarTempo(dados.tempo);
 
         if (entrada) {
-            entrada.textContent =
-                horaEntrada.toLocaleTimeString("pt-BR", formato);
+            entrada.textContent = horaEntrada.toLocaleTimeString("pt-BR", formato);
         }
 
-       
         if (sainda) {
-            sainda.textContent =
-                horaSaida.toLocaleTimeString("pt-BR", formato);
+            sainda.textContent = horaSaida.toLocaleTimeString("pt-BR", formato);
         }
 
         function atualizarContador() {
-
             const restante = saidaEmMs - Date.now();
 
             if (restante <= 0) {
-
                 if (contador) {
                     contador.textContent = "Tempo esgotado";
                 }
@@ -126,114 +113,90 @@ let telefone = formatarTelefone(dados.telefone);
 
             const minutos = Math.floor(restante / 60000);
 
-            const segundos = Math.floor(
-                (restante % 60000) / 1000
-            );
+            const segundos = Math.floor((restante % 60000) / 1000);
 
             if (contador) {
-                contador.textContent =
-                    `${minutos}:${String(segundos).padStart(2, "0")}`;
+                contador.textContent = `${minutos}:${String(segundos).padStart(2, "0")}`;
             }
         }
 
-
         atualizarContador();
 
-        intervalo = window.setInterval(
-            atualizarContador,
-            1000
-        );
+      
+        clearInterval(intervalo);
+
+        intervalo = window.setInterval(atualizarContador, 1000);
 
         return dados;
-
     } catch (erro) {
-
         console.error("Erro ao buscar motorista:", erro);
 
         if (contador) {
             contador.textContent = "Erro na busca";
         }
-          return null;
+        return null;
     }
 }
 
+let motoristaAtual: string | null = null;
 
+const buttonDelete = document.createElement("button");
+buttonDelete.textContent = "Deleta";
+buttonDelete.addEventListener("click", deletaMotorista);
 
-
-
-
-
-
-let motoristaAtual:string | null = null
-
-const buttonDelete = document.createElement("button")
-buttonDelete.textContent = "Deleta"
-buttonDelete.addEventListener("click",deletaMotorista)
-
-function criaDelete(nome:string){
-    informacoes?.appendChild(buttonDelete)
-motoristaAtual = nome
-
+function criaDelete(nome: string) {
+    informacoes?.appendChild(buttonDelete);
+    motoristaAtual = nome;
 }
 
-
-function limpar(){
+function limpar() {
     clearInterval(intervalo);
-    [Nome,contador,Telefone,entrada,sainda,Tempo,Placa].forEach((el)=>{
-        if(el) el.textContent = ""
-       
-    })
-    if(InputPesquisa){
-          InputPesquisa.value = ""
+    [Nome, contador, Telefone, entrada, sainda, Tempo, Placa].forEach((el) => {
+        if (el) el.textContent = "";
+    });
+    if (InputPesquisa) {
+        InputPesquisa.value = "";
     }
-  
-    motoristaAtual = null
-       buttonDelete.remove()
+
+    motoristaAtual = null;
+    buttonDelete.remove();
 }
 
-async  function deletaMotorista(){
-const nome =  motoristaAtual
- if(!nome){
-    return;
- }
-buttonDelete.disabled = true; 
-try{
-const resposta = await fetch(`/deletamotorista/${encodeURIComponent(nome)}`,
-    {method:"DELETE"}
-);
- 
+async function deletaMotorista() {
+    const nome = motoristaAtual;
+    if (!nome) {
+        return;
+    }
+    buttonDelete.disabled = true;
+    try {
+        const resposta = await fetch(`/deletamotorista/${encodeURIComponent(nome)}`, {
+            method: "DELETE",
+        });
 
-const resultado = await resposta.json();
-if(!resposta.ok){
-    console.log("erro ao comunca com o servidor ")
-    return;
-}
-limpar()
-
-}
-catch(erro){
-console.log(erro,"erro ao deleta usuario");
-}
-
-finally{
-    buttonDelete.disabled = false;
-}
-
+        
+        if (!resposta.ok) {
+            console.log("erro ao comunicar com o servidor"); // CORREÇÃO: erro de digitação
+            return;
+        }
+        limpar();
+    } catch (erro) {
+        console.log(erro, "erro ao deletar usuario");
+    } finally {
+        buttonDelete.disabled = false;
+    }
 }
 
 buttonBuscar?.addEventListener("click", async () => {
-  const dados = await enviarReqDeBusca();
+    const dados = await enviarReqDeBusca();
 
-
-  if (dados?.nome) {
-    criaDelete(dados.nome);
-  }
-
-  else{
-    limpar()
-  }
+    if (dados?.nome) {
+        criaDelete(dados.nome);
+    } else {
+        limpar();
+    }
 });
 
-let voltaparacadastro = document.querySelector("#button-left")?.addEventListener("click",()=>{
-   window.location.href = "/cadastro.html"; 
-})
+
+document.querySelector("#button-left")?.addEventListener("click", () => {
+    window.location.href = "/cadastro.html";
+});
